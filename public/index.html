@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>pict2</title>
+</head>
+<body>
+  <input id='name' type='text' placeholder='name' maxlength='8'>
+  <input id='id' type='text' placeholder='room id' maxlength='4'>
+  <button id='submit' onclick='checkNameAndRoomId()'>submit</button>
+  <div id="error"></div>
+  <script type='text/javascript'>
+
+// variables
+const joinGameUrlPath = '/join';
+const cookieDurationInMinutes = 15;
+const nameErrorMessage = 'Your name must be 3 to 8 characters long, and only include lowercase and uppercase letters.';
+const roomIdErrorMessage = 'Your room ID must be 4 numbers.'
+const nameUrlParameter = 'name';
+const RoomIdUrlParameter = 'roomid';
+const jsonResponseSuccessString = 'success';
+const jsonResponseFailureString = 'error';
+const sessionIdCookieKeyValue = 'sessionId';
+
+// doms
+var nameInputDom = document.querySelector('#name');
+var roomIdInputDom = document.querySelector('#id');
+var errorDivDom = document.querySelector('#error');
+
+function checkNameAndRoomId() {
+  let data = {
+    name: nameInputDom.value,
+    roomId: rooomIdInputDom.value
+  };
+  if (nameAndRoomIdAreValid(data)) {
+    askServerIfNameAndRoomIdAreValid();
+  } else {
+    showError(whatIsWrongWithNameAndRoomId(data));
+  };
+}
+
+function whatIsWrongWithNameAndRoomId(data) {
+  let whatIsWrongList = generateListOfWhatIsWrongWithNameAndRoomId();
+  let whatIsWrongText = whatIsWrongList.join(" ");
+  return whatIsWrongText;
+}
+
+function generateListOfWhatIsWrongWithNameAndRoomId(data) {
+  let whatIsWrongList
+  if (!nameIsValid(name)) {
+    whatIsWrong.push(nameErrorMessage);
+  };
+  if (!roomIdIsValid) {
+    whatIsWrong.push(roomIdErrorMessage);
+  }
+  return whatIsWrongList;
+}
+
+function askServerIfNameAndRoomIdAreValid(data) {
+  let name = data.name;
+  let roomId = data.roomId;
+  let requestPath = joinGameUrlPath + '?' + nameUrlParameter + '=' + name + '&' + RoomIdUrlParameter + '=' + roomId;
+  asyncGetRequest(requestPath, processNameAndRoomIdResponse, showError);
+}
+
+function showError(message) {
+  errorDivDom.textContent = message;
+}
+
+function processNameAndRoomIdResponse(text) {
+  let responseJson = JSON.parse(text);
+  let status = responseJson.status;
+
+  if (status === jsonResponseSuccessString) {
+    nameAndRoomIdSuccess(responseJson);
+
+  } else if (status === jsonResponseFailureString) {
+    nameAndRoomIdError(responseJson);
+
+  };
+}
+
+function nameAndRoomIdSuccess(responseJson) {
+  sessionId = responseJson.data
+  setSessionIdCookie(sessionId);
+  goToUrl('/game');
+}
+
+function goToUrl(url) {
+  window.location.href = url;
+}
+
+function setSessionIdCookie(sessionId) {
+  data = {
+    key = sessionIdCookieKeyValue,
+    value = sessionId,
+    date = getDatePlusMinutes(15),
+    path = '/'
+  }
+  createCookie(data);
+}
+
+function getDatePlusMinutes(minutes) {
+  let currentDate = new Date();
+  let currentTime = currentDate.getTime();
+  let expireTime = currentTime + (minutes * 60 * 1000);
+  currentDate.setTime(expireTime);
+  let GmtString = currentDate.toGMTString();
+  return GmtString;
+}
+
+function createCookie(data) {
+  let key = data.key;
+  let value = data.value;
+  let time = data.time;
+  let path = data.path;
+  document.cookie = key + '=' + value + '; expires=' + time + ';path=' + path;
+}
+
+function nameAndRoomIdError(responseJson) {
+  showError(responseJson.data);
+}
+
+function nameAndRoomIdAreValid(data) {
+  let name = data.name;
+  let roomId = data.roomId;
+  return nameIsValid(name) && roomIdIsValid(roomId);
+}
+
+function nameIsValid(name) {
+  return /^[a-zA-Z]{3,8}$/.test(name);
+}
+
+function roomIdIsValid(roomId) {
+  return /^[0-9]{4}$/.test(roomId);
+}
+
+function asyncGetRequest(url, callback, error) {
+  let xhr = new XMLHttpRequest();
+  xhr.open('GET', url, true);
+  xhr.onload = function(e) {
+    if xhr.readyState === 4 && xhr.status === 200 {
+      callback(xhr.responseText);
+    };
+  };
+  xhr.onerror = error;
+  xhr.send();
+}
+
+  </script>
+</body>
+</html>
