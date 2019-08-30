@@ -1,10 +1,10 @@
 // variables
-var indexFilePath = '../public/index.html';
 
 
 // required files
 handleIndexGetRequest = require('./handleIndexGetRequest');
 handleJoinGetRequest = require('./handleJoinGetRequest');
+generateHtmlForGameGetRequest = require('./../generateHtml/generateHtmlForGameGetRequest');
 
 
 // functions
@@ -20,7 +20,7 @@ function setupRouting(app) {
 
   app.get('/game', function(req, res) {
     userId = req.query.id;
-    html = generateHtmlForGameGetRequest(userData, userId);
+    html = generateHtmlForGameGetRequest(userId);
     res.send(html);
   });
 

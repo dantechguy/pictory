@@ -21,9 +21,10 @@ function handleJoinGetRequest(req, res) {
   let data = getDataJsonFromRequest(req);
 
   if (isNameAndRoomIdValid(data)) {
-    nameAndRoomIdSuccess();
-  }
-  
+    nameAndRoomIdSuccess(res);
+  } else {
+    nameAndRoomIdError(res);
+  };
 }
 
 function getDataJsonFromRequest(req) {
@@ -36,18 +37,20 @@ function getDataJsonFromRequest(req) {
   return data;
 }
 
-function nameAndRoomIdSuccess() {
+function nameAndRoomIdSuccess(res) {
   let responseJson = {
     status: 'success',
-    data: 
+    data: 'some session id'
   }
+  res.json(responseJson);
 }
 
-function nameAndRoomIdError() {
+function nameAndRoomIdError(res) {
   let responseJson = {
     status: 'error',
-    data: 
+    data: 'some error message'
   }
+  res.json(responseJson);
 }
 
 module.exports = handleJoinGetRequest;
