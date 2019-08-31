@@ -54,7 +54,7 @@ function createResponseJson(sessionId) {
 function tryToCreateRoomAndCreateProfileAndReturnSessionId(data) {
   let roomId = data.roomId;
   rooms.tryToCreateRoomWithId(roomId);
-  let sessionId = players.createNewProfileAndReturnSessionIdWithRoomId(roomId);
+  let sessionId = players.createNewProfileAndReturnSessionIdWithRoomId(data);
 }
 
 function nameAndRoomIdError(res) {

@@ -11,6 +11,11 @@ class Rooms {
     this.rooms = {};
   }
 
+  addPlayerWithSessionIdToRoomWithId(sessionId, roomId) {
+    let room = this.getRoomWithId(roomId);
+    room.addPlayerWithSessionId(sessionId);
+  }
+
   getRoomWithId(roomId) {
     return this.rooms[roomId];
   }

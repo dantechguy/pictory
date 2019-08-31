@@ -15,6 +15,10 @@ class Room {
     */
   }
 
+  addPlayerWithSessionId(sessionId) {
+    this.players.push(sessionId);
+  }
+
   hasPlayerName(name) {
     return this.players.includes(name);
   }
@@ -23,3 +27,6 @@ class Room {
     return !this.hasPlayerName(name);
   }
 }
+
+
+module.exports = Room;
