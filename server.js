@@ -5,15 +5,17 @@ var app = express();
 
 var server = app.listen(process.env.PORT || 3000);
 
-
 // required files
 const io = require('socket.io')(server);
 const setupRouting = require('./routing/routing');
 const Rooms = require('./dataStructures/rooms');
 const Players = require('./dataStructures/players');
-const rooms, players;
-rooms = new Rooms();
-players = new Players();
+
+
+// data structures
+global.rooms, global.players;
+global.rooms = new Rooms();
+global.players = new Players();
 
 // routing
 setupRouting(app);
@@ -27,4 +29,4 @@ io.on('connection', function(socket) {
 
 });
 
-console.log('Server running')
+console.log('Server running');

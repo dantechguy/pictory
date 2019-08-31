@@ -101,11 +101,10 @@ function setSessionIdCookie(sessionId) {
 
 function getDatePlusMinutes(minutes) {
   let currentDate = new Date();
-  let currentTime = currentDate.getTime();
+  let currentTime = currentDate.now();
   let expireTime = currentTime + (minutes * 60 * 1000);
-  currentDate.setTime(expireTime);
-  let GmtString = currentDate.toGMTString();
-  return GmtString;
+  let newDate = new Date(expireTime);
+  return newDate;
 }
 
 function createCookie(data) {
@@ -113,7 +112,7 @@ function createCookie(data) {
   let value = data.value;
   let time = data.time;
   let path = data.path;
-  document.cookie = key + '=' + value + '; expires=' + time + ';path=' + path;
+  document.cookie = key + '=' + value + '; expires=' + time + ';path=' + path + ';secure';
 }
 
 function nameAndRoomIdError(responseJson) {

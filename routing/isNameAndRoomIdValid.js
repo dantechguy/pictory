@@ -1,3 +1,6 @@
+// variables
+let lobbyStateText = 'lobby';
+
 /*
 WHAT TO CHECK FOR:
 - room id is valid
@@ -9,6 +12,11 @@ WHAT TO CHECK FOR:
 function isNameAndRoomIdValid(data) {
   let name = data.name;
   let roomId = data.roomId;
+  console.log(roomIdIsValid(roomId),
+    nameIsValid(name),
+    roomDoesntExistOrIsInLobbyState(roomId),
+    ifRoomIsInLobbyStateThenNameIsntTaken(data));
+
   return roomIdIsValid(roomId) &&
     nameIsValid(name) &&
     roomDoesntExistOrIsInLobbyState(roomId) &&
@@ -25,11 +33,21 @@ function roomIdIsValid(roomId) {
 }
 
 function roomDoesntExistOrIsInLobbyState(roomId) {
-  return true;
+  let roomDoesntExist = rooms.roomDoesntExistWithId(roomId);
+  let roomIsInLobbyState = rooms.roomWithIdIsInState(roomId, lobbyStateText);
+  return roomDoesntExist || roomIsInLobbyState;
 }
 
 function ifRoomIsInLobbyStateThenNameIsntTaken(data) {
-  return true;
+  let roomId = data.roomId;
+  let name = data.name;
+  let roomIsInLobbyState = rooms.roomWithIdIsInState(roomId, lobbyStateText);
+  let nameIsntTaken = rooms.roomWithIdDoesntHaveName(name);
+  if (roomIsInLobbyState) {
+    return nameIsntTaken;
+  } else {
+    return true;
+  }
 }
 
 module.exports = isNameAndRoomIdValid;

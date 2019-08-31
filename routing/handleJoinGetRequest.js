@@ -21,7 +21,7 @@ function handleJoinGetRequest(req, res) {
   let data = getDataJsonFromRequest(req);
 
   if (isNameAndRoomIdValid(data)) {
-    nameAndRoomIdSuccess(res);
+    nameAndRoomIdSuccess(data, res);
   } else {
     nameAndRoomIdError(res);
   };
@@ -37,12 +37,24 @@ function getDataJsonFromRequest(req) {
   return data;
 }
 
-function nameAndRoomIdSuccess(res) {
-  let responseJson = {
-    status: 'success',
-    data: 'some session id'
-  }
+function nameAndRoomIdSuccess(data, res) {
+  sessionId = tryToCreateRoomAndCreateProfileAndReturnSessionId(data)
+  responseJson = createResponseJson(sessionId);
   res.json(responseJson);
+}
+
+function createResponseJson(sessionId) {
+  responseJson = {
+    status: 'success',
+    data: sessionId
+  }
+  return responseJson;
+}
+
+function tryToCreateRoomAndCreateProfileAndReturnSessionId(data) {
+  let roomId = data.roomId;
+  rooms.tryToCreateRoomWithId(roomId);
+  let sessionId = players.createNewProfileAndReturnSessionIdWithRoomId(roomId);
 }
 
 function nameAndRoomIdError(res) {

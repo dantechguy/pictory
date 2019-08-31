@@ -14,4 +14,12 @@ class Room {
     replay
     */
   }
+
+  hasPlayerName(name) {
+    return this.players.includes(name);
+  }
+
+  doesntHavePlayerName(name) {
+    return !this.hasPlayerName(name);
+  }
 }
