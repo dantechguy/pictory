@@ -93,7 +93,7 @@ function setSessionIdCookie(sessionId) {
   data = {
     key: sessionIdCookieKeyValue,
     value: sessionId,
-    date: getDatePlusMinutes(15),
+    time: getDatePlusMinutes(15),
     path: '/'
   }
   createCookie(data);
@@ -101,10 +101,11 @@ function setSessionIdCookie(sessionId) {
 
 function getDatePlusMinutes(minutes) {
   let currentDate = new Date();
-  let currentTime = currentDate.now();
+  let currentTime = currentDate.getTime();
   let expireTime = currentTime + (minutes * 60 * 1000);
-  let newDate = new Date(expireTime);
-  return newDate;
+  let expireDate = new Date(expireTime);
+  let expireDateText = expireDate.toUTCString();
+  return expireDateText;
 }
 
 function createCookie(data) {
@@ -112,7 +113,13 @@ function createCookie(data) {
   let value = data.value;
   let time = data.time;
   let path = data.path;
-  document.cookie = key + '=' + value + '; expires=' + time + ';path=' + path + ';secure';
+
+  let keyValue = key + '=' + value + ';';
+  let expiresTime = 'expires=' + time + ';';
+  let pathPath = 'path=' + path + ';';
+  let cookie = keyValue + expiresTime + path + 'secure;';
+  alert(cookie);
+  document.cookie = cookie;
 }
 
 function nameAndRoomIdError(responseJson) {

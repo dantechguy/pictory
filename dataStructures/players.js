@@ -16,19 +16,19 @@ class Players {
     this.players[sessionId] = player;
   }
 
-  createPlayerAndReturnSessionIdWithRoomId(playerRequestJson) {r
+  createPlayerAndReturnSessionIdWithRoomId(playerRequestJson) {
     let roomId = playerRequestJson.roomId;
-    let sessionId = createNewUniqueSessionId();
-    let playerRequestJson.sessionId = sessionId;
+    let sessionId = this.createNewUniqueSessionId();
+    playerRequestJson.sessionId = sessionId;
     rooms.addPlayerWithSessionIdToRoomWithId(sessionId, roomId);
     this.createPlayer(playerRequestJson);
     return sessionId;
   }
 
   createNewUniqueSessionId() {
-    let sessionId = generateSessionId();
+    let sessionId = this.generateSessionId();
     while (this.sessionIdExists(sessionId)) {
-      sessionId = generateSessionId();
+      sessionId = this.generateSessionId();
     };
     return sessionId;
   }

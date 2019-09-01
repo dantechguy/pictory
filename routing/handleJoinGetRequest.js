@@ -15,6 +15,7 @@ Unsuccessful response:
 */
 
 isNameAndRoomIdValid = require('./isNameAndRoomIdValid');
+whatIsWrongWithNameAndRoomId = require('./whatIsWrongWithNameAndRoomId');
 
 
 function handleJoinGetRequest(req, res) {
@@ -39,7 +40,7 @@ function getDataJsonFromRequest(req) {
 
 function nameAndRoomIdSuccess(data, res) {
   sessionId = tryToCreateRoomAndCreatePlayerAndReturnSessionId(data)
-  responseJson = createResponseJson(sessionId);
+  responseJson = createSuccessResponseJson(sessionId);
   res.json(responseJson);
 }
 
@@ -59,7 +60,7 @@ function tryToCreateRoomAndCreatePlayerAndReturnSessionId(data) {
 }
 
 function nameAndRoomIdError(data, res) {
-  
+  let responseJson = createErrorResponseJson(data);
   res.json(responseJson);
 }
 
@@ -67,8 +68,9 @@ function createErrorResponseJson(data) {
   let errorMessage = whatIsWrongWithNameAndRoomId(data);
   let responseJson = {
     status: 'error',
-    data: 'some error message'
+    data: errorMessage
   }
+  return responseJson;
 }
 
 module.exports = handleJoinGetRequest;
