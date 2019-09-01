@@ -23,7 +23,7 @@ function handleJoinGetRequest(req, res) {
   if (isNameAndRoomIdValid(data)) {
     nameAndRoomIdSuccess(data, res);
   } else {
-    nameAndRoomIdError(res);
+    nameAndRoomIdError(data, res);
   };
 }
 
@@ -38,31 +38,37 @@ function getDataJsonFromRequest(req) {
 }
 
 function nameAndRoomIdSuccess(data, res) {
-  sessionId = tryToCreateRoomAndCreateProfileAndReturnSessionId(data)
+  sessionId = tryToCreateRoomAndCreatePlayerAndReturnSessionId(data)
   responseJson = createResponseJson(sessionId);
   res.json(responseJson);
 }
 
-function createResponseJson(sessionId) {
-  responseJson = {
+function createSuccessResponseJson(sessionId) {
+  let responseJson = {
     status: 'success',
     data: sessionId
   }
   return responseJson;
 }
 
-function tryToCreateRoomAndCreateProfileAndReturnSessionId(data) {
+function tryToCreateRoomAndCreatePlayerAndReturnSessionId(data) {
   let roomId = data.roomId;
   rooms.tryToCreateRoomWithId(roomId);
-  let sessionId = players.createNewProfileAndReturnSessionIdWithRoomId(data);
+  let sessionId = players.createPlayerAndReturnSessionIdWithRoomId(data);
+  return sessionId;
 }
 
-function nameAndRoomIdError(res) {
+function nameAndRoomIdError(data, res) {
+  
+  res.json(responseJson);
+}
+
+function createErrorResponseJson(data) {
+  let errorMessage = whatIsWrongWithNameAndRoomId(data);
   let responseJson = {
     status: 'error',
     data: 'some error message'
   }
-  res.json(responseJson);
 }
 
 module.exports = handleJoinGetRequest;

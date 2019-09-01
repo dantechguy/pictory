@@ -18,11 +18,11 @@ class Players {
 
   createPlayerAndReturnSessionIdWithRoomId(playerRequestJson) {r
     let roomId = playerRequestJson.roomId;
-    let name = playerRequestJson.name;
     let sessionId = createNewUniqueSessionId();
     let playerRequestJson.sessionId = sessionId;
     rooms.addPlayerWithSessionIdToRoomWithId(sessionId, roomId);
     this.createPlayer(playerRequestJson);
+    return sessionId;
   }
 
   createNewUniqueSessionId() {
