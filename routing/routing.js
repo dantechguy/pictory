@@ -2,17 +2,16 @@
 
 
 // required files
-handleIndexGetRequest = require('./handleIndexGetRequest');
-handleJoinGetRequest = require('./handleJoinGetRequest');
-generateHtmlForGameGetRequest = require('./../generateHtml/generateHtmlForGameGetRequest');
+var express = require('express');
+var handleIndexGetRequest = require('./handleIndexGetRequest');
+var handleJoinGetRequest = require('./handleJoinGetRequest');
+var getFileForStateForGameRequest = require('./getFileForStateForGameRequest');
 
 
 // functions
 function setupRouting(app) {
 
-  app.get('/', function(req, res) {
-    handleIndexGetRequest(req, res);
-  });
+  app.use(express.static('public'));
 
   app.get('/join', function(req, res) {
     handleJoinGetRequest(req, res);
@@ -20,8 +19,8 @@ function setupRouting(app) {
 
   app.get('/game', function(req, res) {
     userId = req.query.id;
-    html = generateHtmlForGameGetRequest(userId);
-    res.send(html);
+    fileDirectory = getFileForStateForGameRequest(userId);
+    res.sendFile(fileDirectory);
   });
 
 }

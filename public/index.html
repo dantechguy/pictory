@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>pict2</title>
+  <title>pictory</title>
 </head>
 <body>
   <input id='name' type='text' placeholder='name' maxlength='8'>
   <input id='id' type='text' placeholder='room id' maxlength='4'>
   <button id='submit' onclick='checkNameAndRoomId()'>submit</button>
   <div id="error"></div>
+
   <script type='text/javascript'>
 
 // variables
@@ -118,7 +119,6 @@ function createCookie(data) {
   let expiresTime = 'expires=' + time + ';';
   let pathPath = 'path=' + path + ';';
   let cookie = keyValue + expiresTime + path + 'secure;';
-  alert(cookie);
   document.cookie = cookie;
 }
 

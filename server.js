@@ -3,7 +3,7 @@ var express = require('express');
 
 var app = express();
 
-var server = app.listen(process.env.PORT || 3000);
+var server = app.listen(3000, '0.0.0.0');
 
 // required files
 const io = require('socket.io')(server);
