@@ -43,17 +43,22 @@ class Rooms {
     return !this.roomExistsWithId(roomId);
   }
 
-  roomWithIdIsInState(roomId, state) {
+  getStateOfRoomWithId(roomId) {
+    let room = this.getRoomWithId(roomId);
+    let roomState = room.state;
+    return roomState;
+  }
+
+  roomWithIdIsInStateOrDoesntExist(roomId, state) {
     if (this.roomExistsWithId(roomId)) {
-      let room = this.getRoomWithId(roomId);
-      let roomState = room.state;
+      let roomState = this.getStateOfRoomWithId(roomId);
       return roomState === state;
     } else {
       return true;
     }
   }
 
-  roomWithIdDoesntHaveName(roomId, name) {
+  roomWithIdDoesntHaveNameOrDoesntExist(roomId, name) {
     if (this.roomExistsWithId(roomId)) {
       let room = this.getRoomWithId(roomId);
       return room.doesntHavePlayerName(name);

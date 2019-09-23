@@ -30,16 +30,16 @@ function roomIdIsValid(roomId) {
 }
 
 function roomDoesntExistOrIsInLobbyState(roomId) {
-  let roomDoesntExist = rooms.roomDoesntExistWithId(roomId);
-  let roomIsInLobbyState = rooms.roomWithIdIsInState(roomId, lobbyStateText);
+  let roomDoesntExist = rooms.roomDoesntExistWithIdOrDoesntExist(roomId);
+  let roomIsInLobbyState = rooms.roomWithIdIsInStateOrDoesntExist(roomId, lobbyStateText);
   return roomDoesntExist || roomIsInLobbyState;
 }
 
 function ifRoomIsInLobbyStateThenNameIsntTaken(data) {
   let roomId = data.roomId;
   let name = data.name;
-  let roomIsInLobbyState = rooms.roomWithIdIsInState(roomId, lobbyStateText);
-  let nameIsntTaken = rooms.roomWithIdDoesntHaveName(name);
+  let roomIsInLobbyState = rooms.roomWithIdIsInStateOrDoesntExist(roomId, lobbyStateText);
+  let nameIsntTaken = rooms.roomWithIdDoesntHaveNameOrDoesntExist(name);
   if (roomIsInLobbyState) {
     return nameIsntTaken;
   } else {

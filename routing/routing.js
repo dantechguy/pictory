@@ -1,31 +1,38 @@
 // variables
+let publicFolder = '/../public/'
+var app;
+var server;
 
 
 // required files
+var path = require('path');
 var express = require('express');
 var handleIndexGetRequest = require('./handleIndexGetRequest');
 var handleJoinGetRequest = require('./handleJoinGetRequest');
-var getFileForStateForGameRequest = require('./getFileForStateForGameRequest');
+var handleGameRequest = require('./handleGameRequest');
 
 
 // functions
-function setupRouting(app) {
+function setupRoutingAndReturnServer() {
 
-  app.use(express.static('public'));
+  app = express();
+  server = app.listen(3000, '0.0.0.0');
+
+  app.use(express.static(path.resolve(__dirname + publicFolder)));
 
   app.get('/join', function(req, res) {
     handleJoinGetRequest(req, res);
   });
 
   app.get('/game', function(req, res) {
-    userId = req.query.id;
-    fileDirectory = getFileForStateForGameRequest(userId);
-    res.sendFile(fileDirectory);
+    fileDirectory = handleGameRequest(req, res);
   });
+
+  return server;
 
 }
 
 
 
 
-module.exports = setupRouting;
+module.exports = setupRoutingAndReturnServer;

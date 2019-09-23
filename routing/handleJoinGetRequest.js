@@ -14,8 +14,8 @@ Unsuccessful response:
 
 */
 
-isNameAndRoomIdValid = require('./isNameAndRoomIdValid');
-whatIsWrongWithNameAndRoomId = require('./whatIsWrongWithNameAndRoomId');
+let isNameAndRoomIdValid = require('./isNameAndRoomIdValid');
+let whatIsWrongWithNameAndRoomId = require('./whatIsWrongWithNameAndRoomId');
 
 
 function handleJoinGetRequest(req, res) {

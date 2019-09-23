@@ -10,6 +10,16 @@ class Players {
     this.players = {} 
   }
 
+  getPlayerWithId(userId) {
+    return this.players[userId];
+  }
+
+  getRoomIdFromUserId(userId) {
+    let player = this.getPlayerWithId(userId);
+    let roomId = player.roomId;
+    return roomId;
+  }
+
   createPlayer(playerRequestJson) {
     let sessionId = playerRequestJson.sessionId;
     let player = new Player(playerRequestJson);

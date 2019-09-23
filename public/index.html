@@ -7,12 +7,14 @@
   <input id='name' type='text' placeholder='name' maxlength='8'>
   <input id='id' type='text' placeholder='room id' maxlength='4'>
   <button id='submit' onclick='checkNameAndRoomId()'>submit</button>
+  <button id='rejoin' onclick='reJoinRoom()'>re join</button>
   <div id="error"></div>
 
   <script type='text/javascript'>
 
 // variables
 const joinGameUrlPath = '/join';
+const gameUrlPath = '/game';
 const cookieDurationInMinutes = 15;
 const nameErrorMessage = 'Your name must be 3 to 8 characters long, and only include lowercase and uppercase letters.';
 const roomIdErrorMessage = 'Your room ID must be 4 numbers.'
@@ -25,7 +27,36 @@ const sessionIdCookieKeyValue = 'sessionId';
 // doms
 var nameInputDom = document.querySelector('#name');
 var roomIdInputDom = document.querySelector('#id');
+var reJoinInputDom = document.querySelector('#rejoin');
 var errorDivDom = document.querySelector('#error');
+
+// re-join code
+
+function getCookie(cname) {
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
+function reJoinRoom() {
+  goToUrl(gameUrlPath);
+}
+
+if (getCookie(sessionIdCookieKeyValue) == '') {
+  reJoinInputDom.display = 'none';
+}
+
+// join code
 
 function checkNameAndRoomId() {
   let data = {
@@ -83,7 +114,7 @@ function processNameAndRoomIdResponse(text) {
 function nameAndRoomIdSuccess(responseJson) {
   sessionId = responseJson.data
   setSessionIdCookie(sessionId);
-  goToUrl('/game');
+  goToUrl(gameUrlPath);
 }
 
 function goToUrl(url) {
@@ -130,7 +161,7 @@ function nameAndRoomIdAreValid(data) {
   let name = data.name;
   let roomId = data.roomId;
   return nameIsValid(name) && roomIdIsValid(roomId);
-}
+} 
 
 function nameIsValid(name) {
   return /^[a-zA-Z]{3,8}$/.test(name);
