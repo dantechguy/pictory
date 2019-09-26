@@ -14,7 +14,6 @@ function setupSockets(server) {
     socket.emit('connection');
 
     socket.on('disconnect', function() {
-      console.log('disconnection!');
     });
 
   });

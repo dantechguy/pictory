@@ -10,12 +10,12 @@ class Players {
     this.players = {} 
   }
 
-  getPlayerWithId(userId) {
-    return this.players[userId];
+  getPlayerWithId(sessionId) {
+    return this.players[sessionId];
   }
 
-  getRoomIdFromUserId(userId) {
-    let player = this.getPlayerWithId(userId);
+  getRoomIdFromSessionId(sessionId) {
+    let player = this.getPlayerWithId(sessionId);
     let roomId = player.roomId;
     return roomId;
   }

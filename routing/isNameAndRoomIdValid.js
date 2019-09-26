@@ -30,7 +30,7 @@ function roomIdIsValid(roomId) {
 }
 
 function roomDoesntExistOrIsInLobbyState(roomId) {
-  let roomDoesntExist = rooms.roomDoesntExistWithIdOrDoesntExist(roomId);
+  let roomDoesntExist = rooms.roomDoesntExistWithId(roomId);
   let roomIsInLobbyState = rooms.roomWithIdIsInStateOrDoesntExist(roomId, lobbyStateText);
   return roomDoesntExist || roomIsInLobbyState;
 }

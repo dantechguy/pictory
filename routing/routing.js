@@ -7,6 +7,7 @@ var server;
 // required files
 var path = require('path');
 var express = require('express');
+var cookieParser = require('cookie-parser');
 var handleIndexGetRequest = require('./handleIndexGetRequest');
 var handleJoinGetRequest = require('./handleJoinGetRequest');
 var handleGameRequest = require('./handleGameRequest');
@@ -16,7 +17,8 @@ var handleGameRequest = require('./handleGameRequest');
 function setupRoutingAndReturnServer() {
 
   app = express();
-  server = app.listen(3000, '0.0.0.0');
+  app.use(cookieParser());
+  server = app.listen(process.env.PORT || 3000);
 
   app.use(express.static(path.resolve(__dirname + publicFolder)));
 

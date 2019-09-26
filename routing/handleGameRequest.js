@@ -1,5 +1,6 @@
 // variables
-let publicFolder = '/../public/'
+let publicFolder = './../public/'
+let invalidSessionIdFileName = 'invalidSessionId.html';
 let roomStateToFileName = {
   'lobby':'lobby.html',
 
@@ -8,23 +9,39 @@ let roomStateToFileName = {
 
 // required files
 const path = require('path');
-let doesSessionIdExist
 
 
 // functions
 function handleGameRequest(req, res) {
-  let isSessionIdValid = 
+  let sessionId = req.cookies.sessionId;
+  let sessionIdIsValid = players.sessionIdExists(sessionId);
 
-  let roomId = players.getRoomIdFromUserId(userId);
-  let roomState = rooms.getStateOfRoomWithId(roomId);
-
-  let fileName = roomStateToFileName[roomState];
-  let filePath = path.resolve(__dirname + publicFolder + fileName);
-
-  res.sendFile(fileDirectory);
+  if (sessionIdIsValid) {
+    sessionIdValid(req, res);
+  } else {
+    sessionIdNotValid(req, res);
+  }
 };
 
 
+function sessionIdValid(req, res) {
+  let sessionId = req.cookies.sessionId;
+  let roomId = players.getRoomIdFromSessionId(sessionId);
+  let roomState = rooms.getStateOfRoomWithId(roomId);
 
+  let fileName = roomStateToFileName[roomState];
+  respondWithFile(res, fileName);  
+}
+
+function sessionIdNotValid(req, res) {
+  respondWithFile(res, invalidSessionIdFileName);
+}
+
+function respondWithFile(res, fileName) {
+  let filePath = __dirname + publicFolder + fileName;
+  let file = path.resolve(filePath);
+
+  res.sendFile(file);
+}
 
 module.exports = handleGameRequest;

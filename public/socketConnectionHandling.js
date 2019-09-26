@@ -4,6 +4,4 @@
 
 var socket = io();
 
-socket.on('connection', function(data) {
-  console.log('connected!!!');
-});
+// socket.on('connection', function(data) {});
