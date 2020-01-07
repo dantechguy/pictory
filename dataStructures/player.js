@@ -7,9 +7,10 @@ class Player {
     this.sessionId = playerJson.sessionId;
     this.name = playerJson.name;
     this.roomId = playerJson.roomId;
-    this.socketId;
+    this.socket;
     this.connected;
     this.following;
+    this.ready;
   }
 }
 

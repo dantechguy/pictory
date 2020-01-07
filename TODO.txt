@@ -1,8 +1,0 @@
-TODO
-
-getFileForStateForGameRequest.js
-if user gets /game with invalid sessionId, delele id and return to home
-make /game return relevant file
-
-routing.js
-change finding userId method. currently looks in url query params, should look in cookies. look at 'cookie-parser' npm package http://expressjs.com/en/api.html#req.cookies 

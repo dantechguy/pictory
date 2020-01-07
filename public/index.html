@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>pictory</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
   <input id='name' type='text' placeholder='name' maxlength='8'>
@@ -125,7 +126,7 @@ function setSessionIdCookie(sessionId) {
   data = {
     key: sessionIdCookieKeyValue,
     value: sessionId,
-    time: getDatePlusMinutes(15),
+    time: getDatePlusMinutes(cookieDurationInMinutes),
     path: '/'
   }
   createCookie(data);

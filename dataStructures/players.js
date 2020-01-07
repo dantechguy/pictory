@@ -20,6 +20,16 @@ class Players {
     return roomId;
   }
 
+  isConnected(sessionId) {
+    let player = this.getPlayerWithId(sessionId);
+    let connected = player.connected;
+    return connected;
+  }
+
+  isDisconnected(sessionId) {
+    return !this.isConnected(sessionId);
+  }
+
   createPlayer(playerRequestJson) {
     let sessionId = playerRequestJson.sessionId;
     let player = new Player(playerRequestJson);

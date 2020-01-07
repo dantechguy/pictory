@@ -14,7 +14,9 @@ const path = require('path');
 // functions
 function handleGameRequest(req, res) {
   let sessionId = req.cookies.sessionId;
-  let sessionIdIsValid = players.sessionIdExists(sessionId);
+  let playerExists = players.sessionIdExists(sessionId);
+  let playerIsDisconnected = players.isDisconnected(sessionId);
+  let sessionIdIsValid = playerExists && playerIsDisconnected;
 
   if (sessionIdIsValid) {
     sessionIdValid(req, res);
