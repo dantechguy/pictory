@@ -9,52 +9,26 @@
   <input id='id' type='text' placeholder='room id' maxlength='4'>
   <button id='submit' onclick='checkNameAndRoomId()'>submit</button>
   <button id='rejoin' onclick='reJoinRoom()'>re join</button>
-  <div id="error"></div>
-  <script type="text/javascript" src="rest.js"></script>
-  <script type='text/javascript'>
 
-// variables
-const joinGameUrlPath = '/join';
-const gameUrlPath = '/game';
-const cookieDurationInMinutes = 15;
-const nameErrorMessage = 'Your name must be 3 to 8 characters long, and only include lowercase and uppercase letters.';
-const roomIdErrorMessage = 'Your room ID must be 4 numbers.';
-const unknownJoinStatusErrorMessage = 'Unknown POST /join status message';
-const nameJsonKey = 'name';
-const roomIdJsonKey = 'roomid';
-const jsonResponseSuccessString = 'success';
-const jsonResponseFailureString = 'error';
-const sessionIdCookieKeyValue = 'sessionId';
+  <script type="text/javascript" src="values.js"></script>
+  <script type="text/javascript" src="rest.js"></script>
+  <script type="text/javascript" src="cookie.js"></script>
+  <script type="text/javascript" src="error.js"></script>
+  <script type="text/javascript" src="nameAndRoomIdValidation.js"></script>
+
+  <script type='text/javascript'>
 
 // doms
 var nameInputDom = document.querySelector('#name');
 var roomIdInputDom = document.querySelector('#id');
 var reJoinInputDom = document.querySelector('#rejoin');
-var errorDivDom = document.querySelector('#error');
 
 // re-join code
-
-function getCookie(cname) {
-  var name = cname + "=";
-  var decodedCookie = decodeURIComponent(document.cookie);
-  var ca = decodedCookie.split(';');
-  for(var i = 0; i <ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
-}
-
 function reJoinRoom() {
-  goToUrl(gameUrlPath);
+  goToUrl(values.url.GAME);
 }
 
-if (getCookie(sessionIdCookieKeyValue) == '') {
+if (getCookie(values.cookie.SESSIONIDKEY) == '') {
   reJoinInputDom.style.display = 'none';
 }
 
@@ -71,102 +45,31 @@ function checkNameAndRoomId() {
   };
 }
 
-//  client side invalid room and name
-function nameAndRoomIdAreValid(data) {
-  let name = data.name;
-  let roomId = data.roomId;
-  return nameIsValid(name) && roomIdIsValid(roomId);
-}
-
-function nameIsValid(name) {
-  return /^[a-zA-Z]{3,8}$/.test(name);
-}
-
-function roomIdIsValid(roomId) {
-  return /^[0-9]{4}$/.test(roomId);
-}
-
-function whatIsWrongWithNameAndRoomId(data) {
-  let whatIsWrongList = generateListOfWhatIsWrongWithNameAndRoomId(data);
-  let whatIsWrongText = whatIsWrongList.join(' ');
-  return whatIsWrongText;
-}
-
-function generateListOfWhatIsWrongWithNameAndRoomId(data) {
-  let whatIsWrongList = [];
-  if (!nameIsValid(data.name)) {
-    whatIsWrongList.push(nameErrorMessage);
-  };
-  if (!roomIdIsValid(data.roomId)) {
-    whatIsWrongList.push(roomIdErrorMessage);
-  }
-  return whatIsWrongList;
-}
-
 // sending and processing join request
 function sendPostJoinRequest(data) {
   let requestJsonBody = generatePostJoinRequestJsonBody(data);
-  postData(joinGameUrlPath, requestJsonBody)
+  postData(values.url.JOIN, requestJsonBody)
   .then(nameAndRoomIdSuccess)
-  .catch(nameAndRoomIdError);
+  .catch(showError);
 }
 
 function generatePostJoinRequestJsonBody(data) {
   let name = data.name;
   let roomId = data.roomId;
-  let requestJsonBody = {};
-  requestJsonBody[nameJsonKey] = name;
-  requestJsonBody[roomIdJsonKey] = roomId;
+  let requestJsonBody = {
+    name: name,
+    roomId: roomId
+  };
   return requestJsonBody;
 }
 
 function nameAndRoomIdSuccess(responseJson) {
   sessionId = responseJson.data
   setSessionIdCookie(sessionId);
-  goToUrl(gameUrlPath);
-}
-
-function nameAndRoomIdError(errorMessage) {
-  showError(errorMessage);
-}
-
-// cookie setting
-function setSessionIdCookie(sessionId) {
-  data = {
-    key: sessionIdCookieKeyValue,
-    value: sessionId,
-    time: getDatePlusMinutes(cookieDurationInMinutes),
-    path: '/'
-  }
-  createCookie(data);
-}
-
-function getDatePlusMinutes(minutes) {
-  let currentDate = new Date();
-  let currentTime = currentDate.getTime();
-  let expireTime = currentTime + (minutes * 60 * 1000);
-  let expireDate = new Date(expireTime);
-  let expireDateText = expireDate.toUTCString();
-  return expireDateText;
-}
-
-function createCookie(data) {
-  let key = data.key;
-  let value = data.value;
-  let time = data.time;
-  let path = data.path;
-
-  let keyValue = key + '=' + value + ';';
-  let expiresTime = 'expires=' + time + ';';
-  let pathPath = 'path=' + path + ';';
-  let cookie = keyValue + expiresTime + path + 'secure;';
-  document.cookie = cookie;
+  goToUrl(values.url.GAME);
 }
 
 // global functions
-function showError(message) {
-  errorDivDom.textContent = message;
-}
 
 function goToUrl(url) {
   window.location.href = url;
