@@ -3,6 +3,7 @@ Networking Rules:
 - all other data use HTTPS and RESTful API
 
 Where to work:
+- check every user input for potential failure
 - make error messages follow protocol with correct return code
 - make server edit only cookies, eg set cookies in request
 - update join request to use body data not query parameters
@@ -147,3 +148,4 @@ Using REST API:
 
   - return status codes are only used for browser
     the client uses the JSON status value for validation
+  - if an error occurs, the function will automatically

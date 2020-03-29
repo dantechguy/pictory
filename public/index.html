@@ -15,6 +15,7 @@
   <script type="text/javascript" src="cookie.js"></script>
   <script type="text/javascript" src="error.js"></script>
   <script type="text/javascript" src="nameAndRoomIdValidation.js"></script>
+  <script type="text/javascript" src="goToUrl.js"></script>
 
   <script type='text/javascript'>
 
@@ -28,7 +29,7 @@ function reJoinRoom() {
   goToUrl(values.url.GAME);
 }
 
-if (getCookie(values.cookie.SESSIONIDKEY) == '') {
+if (getCookie(values.cookie.SESSION_ID_KEY) == '') {
   reJoinInputDom.style.display = 'none';
 }
 
@@ -71,9 +72,7 @@ function nameAndRoomIdSuccess(responseJson) {
 
 // global functions
 
-function goToUrl(url) {
-  window.location.href = url;
-}
+
 
   </script>
 </body>

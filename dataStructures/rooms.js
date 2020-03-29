@@ -12,59 +12,31 @@ class Rooms {
   }
 
   addPlayerWithSessionIdToRoomWithId(sessionId, roomId) {
-    let room = this.getRoomWithId(roomId);
+    let room = this.getRoom(roomId);
     room.addPlayerWithSessionId(sessionId);
   }
 
-  getRoomWithId(roomId) {
+  getRoom(roomId) {
     return this.rooms[roomId];
   }
 
-  deleteRoomWithId(roomId) {
+  deleteRoom(roomId) {
     delete this.rooms[roomId];
   }
 
-  createRoomWithId(roomId) {
+  createRoom(roomId) {
     let room = new Room(roomId);
     this.rooms[roomId] = room;
   }
 
-  tryToCreateRoomWithId(roomId) {
-    if (this.roomDoesntExistWithId(roomId)) {
-      this.createRoomWithId(roomId);
-    }
-  }
-
-  roomExistsWithId(roomId) {
+  roomExists(roomId) {
     return this.rooms.hasOwnProperty(roomId);
   }
 
-  roomDoesntExistWithId(roomId) {
-    return !this.roomExistsWithId(roomId);
-  }
-
-  getStateOfRoomWithId(roomId) {
-    let room = this.getRoomWithId(roomId);
+  getRoomState(roomId) {
+    let room = this.getRoom(roomId);
     let roomState = room.state;
     return roomState;
-  }
-
-  roomWithIdIsInStateOrDoesntExist(roomId, state) {
-    if (this.roomExistsWithId(roomId)) {
-      let roomState = this.getStateOfRoomWithId(roomId);
-      return roomState === state;
-    } else {
-      return true;
-    }
-  }
-
-  roomWithIdDoesntHaveNameOrDoesntExist(roomId, name) {
-    if (this.roomExistsWithId(roomId)) {
-      let room = this.getRoomWithId(roomId);
-      return room.doesntHavePlayerName(name);
-    } else {
-      return true;
-    }
   }
 }
 

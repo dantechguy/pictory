@@ -28,7 +28,7 @@ function getDatePlusMinutes(minutes) {
 
 function setSessionIdCookie(sessionId) {
   data = {
-    key: values.cookie.SESSIONIDKEY,
+    key: values.cookie.SESSION_ID_KEY,
     value: sessionId,
     time: getDatePlusMinutes(values.cookie.DURATION),
     path: '/'

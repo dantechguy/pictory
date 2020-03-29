@@ -24,7 +24,7 @@ function generateListOfWhatIsWrongWithNameAndRoomId(data) {
     whatIsWrongList.push(values.error.NAME);
   };
   if (!roomIdIsValid(data.roomId)) {
-    whatIsWrongList.push(values.error.ROOMID);
+    whatIsWrongList.push(values.error.ROOM_ID);
   }
   return whatIsWrongList;
 }

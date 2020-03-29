@@ -1,80 +1,42 @@
-/*
-
-Successful response:
-{
-  status: "success",
-  data: [session id]
-}
-
-Unsuccessful response:
-{
-  status: "error",
-  data: [error message]
-}
-
-*/
-
-let isNameAndRoomIdValid = require('./isNameAndRoomIdValid');
+let isNameAndRoomIdValid = require('./nameAndRoomIdErrorList');
 let whatIsWrongWithNameAndRoomId = require('./whatIsWrongWithNameAndRoomId');
+let createResponseJson = require('./createResponseJson');
 
 
 function handleJoinGetRequest(req, res) {
-  let data = getDataJsonFromRequest(req);
+  let listOfNameAndRoomIdErrors = nameAndRoomIdErrorList(req.body);
+  let noNameAndRoomIdErrors = listOfNameAndRoomIdErrors.length === 0;
 
-  if (isNameAndRoomIdValid(data)) {
+  if (noNameAndRoomIdErrors) {
     nameAndRoomIdSuccess(data, res);
   } else {
-    nameAndRoomIdError(data, res);
+    nameAndRoomIdError(listOfNameAndRoomIdErrors);
   };
 }
 
-function getDataJsonFromRequest(req) {
-  // let name = req.query.name;
-  // let roomId = req.query.roomid;
-  let jsonBody = JSON.parse(req.body);
-  let name = jsonBody.name;
-  let roomId = jsonBody.roomId;
-  let data = {
-    name: name,
-    roomId: roomId
-  }
-  return data;
-}
-
+// success
 function nameAndRoomIdSuccess(data, res) {
-  sessionId = tryToCreateRoomAndCreatePlayerAndReturnSessionId(data)
+  sessionId = createRoomAndCreatePlayerAndReturnSessionId(data)
   responseJson = createSuccessResponseJson(sessionId);
   res.json(responseJson);
 }
 
 function createSuccessResponseJson(sessionId) {
-  let responseJson = {
-    status: 'success',
-    data: sessionId
-  }
-  return responseJson;
+  return createResponseJson('success', sessionId);
 }
 
-function tryToCreateRoomAndCreatePlayerAndReturnSessionId(data) {
+function createRoomAndCreatePlayerAndReturnSessionId(data) {
   let roomId = data.roomId;
-  rooms.tryToCreateRoomWithId(roomId);
+  rooms.createRoom(roomId);
   let sessionId = players.createPlayerAndReturnSessionIdWithRoomId(data);
   return sessionId;
 }
 
+// error
 function nameAndRoomIdError(data, res) {
-  let responseJson = createErrorResponseJson(data);
+  let responseJson = createResponseJson('error', data.join(" ")); // joins together error strings
   res.status(401);
   res.json(responseJson);
-}
-
-function createErrorResponseJson(data) {
-  let errorMessage = whatIsWrongWithNameAndRoomId(data);
-  let responseJson = {
-    status: 'error',
-    data: errorMessage
-  }
-  return responseJson;
 }
 
 module.exports = handleJoinGetRequest;

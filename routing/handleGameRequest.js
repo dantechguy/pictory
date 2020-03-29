@@ -29,7 +29,7 @@ function handleGameRequest(req, res) {
 function sessionIdValid(req, res) {
   let sessionId = req.cookies.sessionId;
   let roomId = players.getRoomIdFromSessionId(sessionId);
-  let roomState = rooms.getStateOfRoomWithId(roomId);
+  let roomState = rooms.getRoomState(roomId);
 
   let fileName = roomStateToFileName[roomState];
   respondWithFile(res, fileName);

@@ -5,7 +5,7 @@ function playerReady(socket) {
   let sessionId = getSessionIdFromSocket(socket);
   let player = players.getPlayerWithId(sessionId);
   player.setToReady();
-  let room = rooms.getRoomWithId(player.roomId);
+  let room = rooms.getRoom(player.roomId);
 
 }
 
