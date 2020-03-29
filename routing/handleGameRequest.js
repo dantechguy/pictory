@@ -32,7 +32,7 @@ function sessionIdValid(req, res) {
   let roomState = rooms.getStateOfRoomWithId(roomId);
 
   let fileName = roomStateToFileName[roomState];
-  respondWithFile(res, fileName);  
+  respondWithFile(res, fileName);
 }
 
 function sessionIdNotValid(req, res) {

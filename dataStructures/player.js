@@ -11,6 +11,24 @@ class Player {
     this.connected;
     this.following;
     this.ready;
+    this.chain;
+    this.data;
+  }
+
+  setToReady() {
+    this.ready = true;
+  }
+
+  setToNotReady() {
+    this.ready = false;
+  }
+
+  isReady() {
+    return this.ready;
+  }
+
+  isNotReady() {
+    return !this.isReady();
   }
 }
 

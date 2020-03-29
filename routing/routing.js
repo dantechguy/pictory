@@ -22,7 +22,7 @@ function setupRoutingAndReturnServer() {
 
   app.use(express.static(path.resolve(__dirname + publicFolder)));
 
-  app.get('/join', function(req, res) {
+  app.post('/join', function(req, res) {
     handleJoinGetRequest(req, res);
   });
 

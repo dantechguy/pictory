@@ -29,8 +29,11 @@ function handleJoinGetRequest(req, res) {
 }
 
 function getDataJsonFromRequest(req) {
-  let name = req.query.name;
-  let roomId = req.query.roomid;
+  // let name = req.query.name;
+  // let roomId = req.query.roomid;
+  let jsonBody = JSON.parse(req.body);
+  let name = jsonBody.name;
+  let roomId = jsonBody.roomId;
   let data = {
     name: name,
     roomId: roomId

@@ -8,10 +8,6 @@ var playersReady = {};
 
 // socket.on('connection', function(data) {});
 
-function sendSocketMessage(name) {
-  socket.emit(name);
-}
-
 socket.on('playersReady', function(playersReadyJSON) {
   playersReady = playersReadyJSON;
 })

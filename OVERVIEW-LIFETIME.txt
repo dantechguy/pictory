@@ -1,0 +1,76 @@
+Lifetime:
+- client / request
+- server send index page
+- client ajax /join request, type in name and room id
+  - name 3-8 letters
+  - room id 4 numbers
+- server receive request
+  - error if
+    - room id invalid
+    - room game has started (not in lobby)
+    - name is invalid
+    - name already taken
+  - succeed if
+    - room not started (in lobby) & name not taken
+    - name not taken
+    - room doesn't exist
+- server response
+  - success
+    - create room if needed
+    - create user profile on server
+    - create session id for profile
+  - send JSON success & session id or error message
+- client receive JSON message
+  - if error, don't change page, display error
+  - if success, set session id (maybe automatic now?) move to /game
+
+- server receive /game request
+  - look for session id cookie
+  - error if
+    - no cookie found
+    - session id invalid
+    - user already connected
+    - delete cookie, return to home
+  - success if
+    - session id valid
+    - user not connected
+  - if success
+    - look at room for session id
+    - find game state
+    - return html file for state
+- client receives /game page
+  - load socket.io, set connected true
+
+- game state lobby
+  - button to say if ready or not
+  - list of all players and ready state
+- game state initial idea
+  - input idea into box
+  - submit button to send
+  - PUT /data {data: "this is my prompt!"}
+    - if error, display error
+  - max limit of 32 chars
+  - PUT /done
+    - if error, display error
+- game state drawing prompt
+  - GET /data
+    - if error, display error
+  - show prompt
+  - draw in box
+  - submit button to send
+  - PUT /data {data: ""}
+    - if error, display error
+  - PUT /done
+    - if error, display error
+- game state guessing prompt
+  - GET /data
+    - if error, display error
+  - show drawing
+  - type in box
+  - submit button to send
+  - PUT /data {data: "my guess!"}
+    - if error, display error
+  - PUT /done
+- game state replay
+  - carousel of users drawing chain
+  - canvas drawings

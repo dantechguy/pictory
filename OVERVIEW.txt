@@ -1,0 +1,140 @@
+Networking Rules:
+- only use web-sockets for direct server to client communication
+- all other data use HTTPS and RESTful API
+
+Where to work:
+- make server edit only cookies, eg set cookies in request
+- update join request to use body data not query parameters
+- lobby.html and other game state files
+- style.css
+- /time returns timestamp for game state
+- /send sends data you made
+- allow players to leave mid-game by pressing 'leave'
+- after time limit, client send any data
+
+Players leaving:
+- players can exit & reload page anytime
+- game will not change state until all players are connected and ready
+  - if timer hits zero
+    - non connected players have 30 seconds to connect before removed
+    - non ready players are set to ready and data is sent
+- players can permanently leave game via leave button, for next state
+  - will remove that player from the follow chain after next change
+  - connect new neighbours in chain
+  - figure out how to re-sort chain, delete left players chain
+
+RESTful API endpoints:
+GET /
+  - home page, where user joins initially
+POST /join
+  - request to join or create room
+  - request body JSON {roomId: "1234", name: "dan"}
+  - error
+    - name invalid (3-8 letters)
+    - name already taken
+    - room id invalid (4 numbers)
+    - room already started (not in lobby)
+    - send JSON message {status: "error", data: "error message"}
+  - success
+    - name valid
+    - room id valid
+    - room id not started or created
+    - name not taken
+    - create room if needed
+    - create user profile
+    - create session id for profile
+    - send JSON message {status: "success", data: "[session id]"} (could change if cookie automatic)
+GET /game     all game states, for current task
+  - session id cookie
+  - error
+    - no cookie found
+    - session id invalid
+    - user already connected
+    - delete cookie, return /
+  - success
+    - session id valid
+    - user not connected
+    - look at session id room
+    - look at room state
+    - send html file for state
+GET /time
+  - for client to display timer to end of state
+  - session id cookie
+  - error
+    - no cookie
+    - session id invalid
+    - send JSON message {status: "error", data: "[error message]"}
+  - success
+    - session id valid
+    - look at session id room
+    - look at room timer
+    - send JSON message {status: "success", data: "[UTC timestamp]"}
+PUT /data
+  - text or drawing data you have made
+  - request body JSON {data: "text prompt"} or {data: "[drawing data]"}
+  - session id cookie
+  - error
+    - no cookie
+    - session id invalid
+    - send JSON message {status: "error", data: "[error message]"}
+  - success
+    - session id valid
+    - look at session id profile
+    - set data to profile data
+    - send JSON message {status: "success", data: ""}
+GET /data
+  - text or drawing data as your prompt
+  - session id cookie
+  - error
+    - no cookie
+    - session id invalid
+    - send JSON message {status: "error", data: "[error message]"}
+  - success
+    - session id valid
+    - look at session id profile
+    - look at following profile
+    - get following profile data
+    - send JSON message {status: "success", data: "[following data]"}
+PUT /done
+  - update once you have finished current state
+  - session id cookie
+  - error
+    - no cookie
+    - session id invalid
+    - send JSON message {status: "error", data: "[error message]"}
+  - success
+    - session id valid
+    - look at session id profile
+    - set ready to true
+    - send JSON message {status: "success", data: ""}
+
+Web-socket interactions:
+- Client:
+    reload
+      - game state has updated, reload page
+    playersReady
+      - updated when new players are ready {"dan":true, "fed":false}
+- Server:
+    connected
+      - connected at /game
+      - just joined, changing state, or reloading
+      - get session id cookie
+      - file profile for session id
+      - add socket to profile
+      - add socket to socket.io room
+      - set 'connected' to true
+    disconnected
+      - disconnected from /game
+      - changing page, reloading or leaving
+      - get session id from cookie
+      - find profile for session id
+      - remove socket from profile
+      - remove socket from socket.io room
+      - set 'connected' to false
+      - if all players are disconnected
+        - delete room and players
+
+Identifier and key rules:
+  "name"
+  "roomId"
+  "sessionId"

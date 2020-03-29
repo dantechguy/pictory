@@ -1,17 +1,26 @@
 // variables
-var domButtonId = 'readyButton';
+var domButtonDivId = 'readyButton';
 var domButtonReadyText = 'I am ready';
 var domButtonNotReadyText = 'I am not ready'
 
+var domButtonDiv = document.getElementById(domButtonDivId);
+var domButtom;
 
 // functions
-function setupDomButton() {
-  var domButton = document.getElementById(domButtonId);
+
+function createButton() {
+  domButton = document.createElement('button');
+  setNotReadyState();
 }
 
 function clickedReady() {
   setReadyState();
-  sendSocketMessage('ready');
+  postData('ready');
+}
+
+function clickedNotReady() {
+  setNotReadyState();
+  postData('not ready')
 }
 
 function setReadyState() {
@@ -19,12 +28,11 @@ function setReadyState() {
   domButton.setAttribute('onclick', 'clickedNotReady()');
 }
 
-function clickedNotReady() {
-  setNotReadyState();
-  sendSocketMessage('not ready')
-}
-
 function setNotReadyState() {
   domButton.textContent = domButtonNotReadyText;
   domButton.setAttribute('onclick', 'clickedReady()');
 }
+
+
+// setup
+createButton();
