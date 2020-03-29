@@ -64,6 +64,7 @@ function tryToCreateRoomAndCreatePlayerAndReturnSessionId(data) {
 
 function nameAndRoomIdError(data, res) {
   let responseJson = createErrorResponseJson(data);
+  res.status(401);
   res.json(responseJson);
 }
 

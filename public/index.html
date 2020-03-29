@@ -10,7 +10,7 @@
   <button id='submit' onclick='checkNameAndRoomId()'>submit</button>
   <button id='rejoin' onclick='reJoinRoom()'>re join</button>
   <div id="error"></div>
-
+  <script type="text/javascript" src="rest.js"></script>
   <script type='text/javascript'>
 
 // variables
@@ -18,9 +18,10 @@ const joinGameUrlPath = '/join';
 const gameUrlPath = '/game';
 const cookieDurationInMinutes = 15;
 const nameErrorMessage = 'Your name must be 3 to 8 characters long, and only include lowercase and uppercase letters.';
-const roomIdErrorMessage = 'Your room ID must be 4 numbers.'
-const nameUrlParameter = 'name';
-const RoomIdUrlParameter = 'roomid';
+const roomIdErrorMessage = 'Your room ID must be 4 numbers.';
+const unknownJoinStatusErrorMessage = 'Unknown POST /join status message';
+const nameJsonKey = 'name';
+const roomIdJsonKey = 'roomid';
 const jsonResponseSuccessString = 'success';
 const jsonResponseFailureString = 'error';
 const sessionIdCookieKeyValue = 'sessionId';
@@ -57,18 +58,32 @@ if (getCookie(sessionIdCookieKeyValue) == '') {
   reJoinInputDom.style.display = 'none';
 }
 
-// join code
-
+// submit button call
 function checkNameAndRoomId() {
   let data = {
     name: nameInputDom.value,
     roomId: roomIdInputDom.value
   };
   if (nameAndRoomIdAreValid(data)) {
-    askServerIfNameAndRoomIdAreValid(data);
+    sendPostJoinRequest(data);
   } else {
     showError(whatIsWrongWithNameAndRoomId(data));
   };
+}
+
+//  client side invalid room and name
+function nameAndRoomIdAreValid(data) {
+  let name = data.name;
+  let roomId = data.roomId;
+  return nameIsValid(name) && roomIdIsValid(roomId);
+}
+
+function nameIsValid(name) {
+  return /^[a-zA-Z]{3,8}$/.test(name);
+}
+
+function roomIdIsValid(roomId) {
+  return /^[0-9]{4}$/.test(roomId);
 }
 
 function whatIsWrongWithNameAndRoomId(data) {
@@ -88,28 +103,21 @@ function generateListOfWhatIsWrongWithNameAndRoomId(data) {
   return whatIsWrongList;
 }
 
-function askServerIfNameAndRoomIdAreValid(data) {
+// sending and processing join request
+function sendPostJoinRequest(data) {
+  let requestJsonBody = generatePostJoinRequestJsonBody(data);
+  postData(joinGameUrlPath, requestJsonBody)
+  .then(nameAndRoomIdSuccess)
+  .catch(nameAndRoomIdError);
+}
+
+function generatePostJoinRequestJsonBody(data) {
   let name = data.name;
   let roomId = data.roomId;
-  let requestPath = joinGameUrlPath + '?' + nameUrlParameter + '=' + name + '&' + RoomIdUrlParameter + '=' + roomId;
-  asyncGetRequest(requestPath, processNameAndRoomIdResponse, showError);
-}
-
-function showError(message) {
-  errorDivDom.textContent = message;
-}
-
-function processNameAndRoomIdResponse(text) {
-  let responseJson = JSON.parse(text);
-  let status = responseJson.status;
-
-  if (status === jsonResponseSuccessString) {
-    nameAndRoomIdSuccess(responseJson);
-
-  } else if (status === jsonResponseFailureString) {
-    nameAndRoomIdError(responseJson);
-
-  };
+  let requestJsonBody = {};
+  requestJsonBody[nameJsonKey] = name;
+  requestJsonBody[roomIdJsonKey] = roomId;
+  return requestJsonBody;
 }
 
 function nameAndRoomIdSuccess(responseJson) {
@@ -118,10 +126,11 @@ function nameAndRoomIdSuccess(responseJson) {
   goToUrl(gameUrlPath);
 }
 
-function goToUrl(url) {
-  window.location.href = url;
+function nameAndRoomIdError(errorMessage) {
+  showError(errorMessage);
 }
 
+// cookie setting
 function setSessionIdCookie(sessionId) {
   data = {
     key: sessionIdCookieKeyValue,
@@ -154,34 +163,13 @@ function createCookie(data) {
   document.cookie = cookie;
 }
 
-function nameAndRoomIdError(responseJson) {
-  showError(responseJson.data);
+// global functions
+function showError(message) {
+  errorDivDom.textContent = message;
 }
 
-function nameAndRoomIdAreValid(data) {
-  let name = data.name;
-  let roomId = data.roomId;
-  return nameIsValid(name) && roomIdIsValid(roomId);
-} 
-
-function nameIsValid(name) {
-  return /^[a-zA-Z]{3,8}$/.test(name);
-}
-
-function roomIdIsValid(roomId) {
-  return /^[0-9]{4}$/.test(roomId);
-}
-
-function asyncGetRequest(url, callback, error) {
-  let xhr = new XMLHttpRequest();
-  xhr.open('GET', url, true);
-  xhr.onload = function(e) {
-    if (xhr.readyState === 4 && xhr.status === 200) {
-      callback(xhr.responseText);
-    };
-  };
-  xhr.onerror = error;
-  xhr.send();
+function goToUrl(url) {
+  window.location.href = url;
 }
 
   </script>

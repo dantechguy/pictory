@@ -3,6 +3,7 @@ Networking Rules:
 - all other data use HTTPS and RESTful API
 
 Where to work:
+- make error messages follow protocol with correct return code
 - make server edit only cookies, eg set cookies in request
 - update join request to use body data not query parameters
 - lobby.html and other game state files
@@ -34,7 +35,7 @@ POST /join
     - name already taken
     - room id invalid (4 numbers)
     - room already started (not in lobby)
-    - send JSON message {status: "error", data: "error message"}
+    - send JSON message {status: "error", data: "error message"} 401
   - success
     - name valid
     - room id valid
@@ -43,7 +44,7 @@ POST /join
     - create room if needed
     - create user profile
     - create session id for profile
-    - send JSON message {status: "success", data: "[session id]"} (could change if cookie automatic)
+    - send JSON message {status: "success", data: "[session id]"} (could change if cookie automatic) 200
 GET /game     all game states, for current task
   - session id cookie
   - error
@@ -63,12 +64,12 @@ GET /time
   - error
     - no cookie
     - session id invalid
-    - send JSON message {status: "error", data: "[error message]"}
+    - send JSON message {status: "error", data: "[error message]"} 401
   - success
     - session id valid
     - look at session id room
     - look at room timer
-    - send JSON message {status: "success", data: "[UTC timestamp]"}
+    - send JSON message {status: "success", data: "[UTC timestamp]"} 200
 PUT /data
   - text or drawing data you have made
   - request body JSON {data: "text prompt"} or {data: "[drawing data]"}
@@ -76,37 +77,37 @@ PUT /data
   - error
     - no cookie
     - session id invalid
-    - send JSON message {status: "error", data: "[error message]"}
+    - send JSON message {status: "error", data: "[error message]"} 401
   - success
     - session id valid
     - look at session id profile
     - set data to profile data
-    - send JSON message {status: "success", data: ""}
+    - send JSON message {status: "success", data: ""} 200
 GET /data
   - text or drawing data as your prompt
   - session id cookie
   - error
     - no cookie
     - session id invalid
-    - send JSON message {status: "error", data: "[error message]"}
+    - send JSON message {status: "error", data: "[error message]"} 401
   - success
     - session id valid
     - look at session id profile
     - look at following profile
     - get following profile data
-    - send JSON message {status: "success", data: "[following data]"}
+    - send JSON message {status: "success", data: "[following data]"} 200
 PUT /done
   - update once you have finished current state
   - session id cookie
   - error
     - no cookie
     - session id invalid
-    - send JSON message {status: "error", data: "[error message]"}
+    - send JSON message {status: "error", data: "[error message]"} 401
   - success
     - session id valid
     - look at session id profile
     - set ready to true
-    - send JSON message {status: "success", data: ""}
+    - send JSON message {status: "success", data: ""} 200
 
 Web-socket interactions:
 - Client:
@@ -138,3 +139,11 @@ Identifier and key rules:
   "name"
   "roomId"
   "sessionId"
+
+Using REST API:
+  request = putData(url, "whatever data")
+  .then(successData) // this will be called with code 2xx and status success
+  .catch(errorData); // network error, non 2xx code, or status error
+
+  - return status codes are only used for browser
+    the client uses the JSON status value for validation
