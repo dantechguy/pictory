@@ -17,7 +17,7 @@ var handleGameRequest = require('./handleGameRequest');
 function setupRoutingAndReturnServer() {
 
   app = express();
-  app.use(cookieParser());
+  app.use(express.json({ limit: '500KB' })); // allows json body to be automatically parsed, limits size to 500KB
   server = app.listen(process.env.PORT || 3000);
 
   app.use(express.static(path.resolve(__dirname + publicFolder)));

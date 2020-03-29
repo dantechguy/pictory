@@ -3,6 +3,7 @@ Networking Rules:
 - all other data use HTTPS and RESTful API
 
 Where to work:
+- is 50KB limit large enough for drawing data
 - check every user input for potential failure
 - make error messages follow protocol with correct return code
 - make server edit only cookies, eg set cookies in request
@@ -45,17 +46,17 @@ POST /join
     - create room if needed
     - create user profile
     - create session id for profile
-    - send JSON message {status: "success", data: "[session id]"} (could change if cookie automatic) 200
+    - send JSON message {status: "success", data: ""} (changes cookie in headers) 200
 GET /game     all game states, for current task
   - session id cookie
   - error
     - no cookie found
     - session id invalid
-    - user already connected
+    - user socket already connected
     - delete cookie, return /
   - success
     - session id valid
-    - user not connected
+    - user socket not connected
     - look at session id room
     - look at room state
     - send html file for state

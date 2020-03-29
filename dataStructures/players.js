@@ -7,7 +7,7 @@ let Player = require('./player');
 // classes
 class Players {
   constructor() {
-    this.players = {} 
+    this.players = {}
   }
 
   getPlayerWithId(sessionId) {
@@ -30,22 +30,21 @@ class Players {
     return !this.isConnected(sessionId);
   }
 
-  createPlayer(playerRequestJson) {
-    let sessionId = playerRequestJson.sessionId;
-    let player = new Player(playerRequestJson);
-    this.players[sessionId] = player;
+  createPlayer(data) {
+    let player = new Player(data);
+    this.players[data.sessionId] = player;
   }
 
-  createPlayerAndReturnSessionIdWithRoomId(playerRequestJson) {
-    let roomId = playerRequestJson.roomId;
+  // session id generation
+  createPlayerReturnSessionId(data) {
     let sessionId = this.createNewUniqueSessionId();
-    playerRequestJson.sessionId = sessionId;
-    rooms.addPlayerWithSessionIdToRoomWithId(sessionId, roomId);
-    this.createPlayer(playerRequestJson);
+    data.sessionId = sessionId;
+    rooms.addPlayerToRoom(data);
+    this.createPlayer(data);
     return sessionId;
   }
 
-  createNewUniqueSessionId() {
+  createNewUniqueSessionId() { // not ideal
     let sessionId = this.generateSessionId();
     while (this.sessionIdExists(sessionId)) {
       sessionId = this.generateSessionId();
@@ -65,10 +64,6 @@ class Players {
 
   sessionIdExists(sessionId) {
     return this.players.hasOwnProperty(sessionId);
-  }
-
-  sessionIdDoesntExist(sessionId) {
-    return !this.sessionIdExists(sessionId);
   }
 }
 

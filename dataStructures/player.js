@@ -3,10 +3,10 @@
 
 // classes
 class Player {
-  constructor(playerJson) {
-    this.sessionId = playerJson.sessionId;
-    this.name = playerJson.name;
-    this.roomId = playerJson.roomId;
+  constructor(data) {
+    this.sessionId = data.sessionId;
+    this.name = data.name;
+    this.roomId = data.roomId;
     this.socket;
     this.connected;
     this.following;

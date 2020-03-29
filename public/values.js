@@ -15,11 +15,19 @@ const values = {
     NAME_TAKEN: 'This name has already been taken in this room.',
   },
   state: {
-    LOBBY: 'lobby',
-    IDEA: 'idea',
-    DRAW: 'draw',
-    GUESS: 'guess',
-    REPLAY: 'replay'
+    LOBBY: 'LOBBY',
+    IDEA: 'IDEA',
+    DRAW: 'DRAW',
+    GUESS: 'GUESS',
+    REPLAY: 'REPLAY'
+  },
+  file: {
+    PUBLIC: './../public/',
+    INDEX: 'index.html',
+    LOBBY: 'lobby.html',
+    DRAW: 'draw.html',
+    GUESS: 'guess.html',
+    REPLAY: 'replay.html'
   }
 }
 

@@ -11,9 +11,9 @@ class Rooms {
     this.rooms = {};
   }
 
-  addPlayerWithSessionIdToRoomWithId(sessionId, roomId) {
-    let room = this.getRoom(roomId);
-    room.addPlayerWithSessionId(sessionId);
+  addPlayerToRoom(data) {
+    let room = this.getRoom(data.roomId);
+    room.addPlayerWithSessionId(data.sessionId);
   }
 
   getRoom(roomId) {

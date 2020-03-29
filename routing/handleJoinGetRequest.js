@@ -16,25 +16,16 @@ function handleJoinGetRequest(req, res) {
 
 // success
 function nameAndRoomIdSuccess(data, res) {
-  sessionId = createRoomAndCreatePlayerAndReturnSessionId(data)
-  responseJson = createSuccessResponseJson(sessionId);
+  rooms.createRoom(data.roomId);
+  sessionId = players.createPlayerReturnSessionId(data);
+  responseJson = createResponseJson('success', '');
+  res.cookie(values.cookie.SESSION_ID_KEY, sessionId, {httpOnly: true, secure: true});
   res.json(responseJson);
-}
-
-function createSuccessResponseJson(sessionId) {
-  return createResponseJson('success', sessionId);
-}
-
-function createRoomAndCreatePlayerAndReturnSessionId(data) {
-  let roomId = data.roomId;
-  rooms.createRoom(roomId);
-  let sessionId = players.createPlayerAndReturnSessionIdWithRoomId(data);
-  return sessionId;
 }
 
 // error
 function nameAndRoomIdError(data, res) {
-  let responseJson = createResponseJson('error', data.join(" ")); // joins together error strings
+  let responseJson = createResponseJson('error', data.join(' ')); // joins together error strings
   res.status(401);
   res.json(responseJson);
 }

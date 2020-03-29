@@ -50,7 +50,7 @@ function checkNameAndRoomId() {
 function sendPostJoinRequest(data) {
   let requestJsonBody = generatePostJoinRequestJsonBody(data);
   postData(values.url.JOIN, requestJsonBody)
-  .then(nameAndRoomIdSuccess)
+  .then((data) => {goToUrl(values.url.GAME)}))
   .catch(showError);
 }
 
@@ -63,16 +63,6 @@ function generatePostJoinRequestJsonBody(data) {
   };
   return requestJsonBody;
 }
-
-function nameAndRoomIdSuccess(responseJson) {
-  sessionId = responseJson.data
-  setSessionIdCookie(sessionId);
-  goToUrl(values.url.GAME);
-}
-
-// global functions
-
-
 
   </script>
 </body>

@@ -1,12 +1,3 @@
-// variables
-let publicFolder = './../public/'
-let invalidSessionIdFileName = 'invalidSessionId.html';
-let roomStateToFileName = {
-  'lobby':'lobby.html',
-
-}
-
-
 // required files
 const path = require('path');
 
@@ -25,22 +16,22 @@ function handleGameRequest(req, res) {
   }
 };
 
-
 function sessionIdValid(req, res) {
   let sessionId = req.cookies.sessionId;
   let roomId = players.getRoomIdFromSessionId(sessionId);
   let roomState = rooms.getRoomState(roomId);
 
-  let fileName = roomStateToFileName[roomState];
+  let fileName = values.file[roomState];
   respondWithFile(res, fileName);
 }
 
 function sessionIdNotValid(req, res) {
-  respondWithFile(res, invalidSessionIdFileName);
+  res.cookie('sessionId', '');
+  respondWithFile(res, values.file.INDEX);
 }
 
 function respondWithFile(res, fileName) {
-  let filePath = __dirname + publicFolder + fileName;
+  let filePath = __dirname + values.file.PUBLIC + fileName;
   let file = path.resolve(filePath);
 
   res.sendFile(file);
