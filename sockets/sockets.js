@@ -6,6 +6,7 @@ var io;
 const playerConnectionFunctions = require('./playerConnections');
 const playerConnected = playerConnectionFunctions.connected;
 const playerDisconnected = playerConnectionFunctions.disconnected;
+const sendRoomMessageFunctionFunction = require('./sendRoomMessage');
 
 
 // functions
@@ -21,6 +22,7 @@ function setupSockets(server) {
     });
 
   });
+  return sendRoomMessageFunctionFunction(io);
 }
 
 

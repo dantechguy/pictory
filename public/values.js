@@ -43,6 +43,10 @@ const values = {
     IDEA: 'DRAW',
     DRAW: 'GUESS',
     GUESS: 'DRAW',
+  },
+  socket: {
+    RELOAD: 'RELOAD',
+    UPDATE_PLAYERS: 'UPDATE_PLAYERS'
   }
 }
 

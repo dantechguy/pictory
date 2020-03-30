@@ -7,7 +7,8 @@ let Room = require('./room');
 
 // classes
 class Rooms {
-  constructor() {
+  constructor(sendRoomMessageFunction) {
+    this.sendRoomMessageFunction = sendRoomMessageFunction;
     this.rooms = {};
   }
 
@@ -18,6 +19,12 @@ class Rooms {
   addPlayerToRoom(data) {
     let room = this.getRoom(data.roomId);
     room.addPlayerWithSessionId(data.sessionId);
+  }
+
+  tryToStartGame(roomId) {
+    if (this.allPlayersAreReady(roomId)) {
+      this.startGame(roomId);
+    }
   }
 
   startGame(roomId) {
@@ -34,7 +41,7 @@ class Rooms {
   }
 
   createRoom(roomId) {
-    let room = new Room(roomId);
+    let room = new Room(roomId, sendRoomMessageFunction);
     this.rooms[roomId] = room;
   }
 

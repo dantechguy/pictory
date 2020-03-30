@@ -6,15 +6,20 @@ const Rooms = require('./dataStructures/rooms');
 const Players = require('./dataStructures/players');
 
 
-// setup data structures
-global.rooms, global.players, global.values;
-global.rooms = new Rooms();
-global.players = new Players();
+
+// global.rooms, global.players, global.values; // why is this needed?
+
+// setup global values
 global.values = values;
 
 // call setup functions
 var server = setupRoutingAndReturnServer();
-setupSockets(server);
+sendRoomMessageFunction = setupSockets(server); // function to send socket messages
+
+
+// setup data structures
+global.rooms = new Rooms(sendRoomMessageFunction);
+global.players = new Players();
 
 
 

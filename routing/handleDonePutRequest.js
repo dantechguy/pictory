@@ -3,7 +3,6 @@ const createResponseJson = responseFunctions.responseJson;
 const requestError = responseFunctions.errorList;
 const generateDataJson = responseFunctions.dataJson;
 const generateErrorList = require('./generateErrorList');
-const tryToStartGame = require('./startGame');
 
 
 function handleDataPutRequest(req, res) {
@@ -24,7 +23,7 @@ function requestSuccess(data, res) {
   player.setToReady(); // set player to ready
   let responseJson = createResponseJson('success', '');
   res.json(responseJson);
-  rooms.startGame(data.roomId);
+  rooms.tryToStartGame(data.roomId);
 }
 
 module.exports = handleDataPutRequest;

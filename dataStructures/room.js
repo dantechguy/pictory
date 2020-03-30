@@ -1,18 +1,13 @@
 // classes
 class Room {
-  constructor(roomId) {
+  constructor(roomId, sendRoomMessageFunction) {
     this.roomId = roomId;
     this.players = [];
     this.state = values.state.LOBBY;
     this.round = 0;
     this.time; // UTC timestamp to end of round
-    /* state can be:
-    lobby
-    idea
-    drawing
-    guess
-    replay
-    */
+    // function passed from socket server init
+    this.sendRoomMessage = sendRoomMessageFunction(this.roomId);
   }
 
   startGame() {
@@ -48,7 +43,7 @@ class Room {
   }
 
   sendSocketReloadMessage() {
-    
+    this.sendRoomMessage(values.socket.RELOAD);
   }
 
   // getters n helpers
@@ -66,7 +61,7 @@ class Room {
     for (let i = 0; i < this.players.length; i++) {
       sessionId = this.players[i];
       player = players.getPlayer(sessionId);
-      if (player.isNotReady()) {
+      if (player.isNotReady() || player.isDisconnected()) {
         return false;
       }
     }

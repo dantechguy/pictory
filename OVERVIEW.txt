@@ -1,4 +1,5 @@
 Where to work:
+- check time limits work
 - web-socket updates, send reload message
 - game start routine
 - check all routes check for correct state and ready
@@ -7,7 +8,6 @@ Where to work:
 - lobby.html and other game state files
 - style.css
 - allow players to leave mid-game by pressing 'leave'
-- after time limit, client send any data
 - plan and do all client side stuff
 
 Players leaving:
@@ -75,12 +75,14 @@ PUT /data
   - request body JSON {data: "text prompt"} or {data: "[drawing data]"}
   - session id cookie
   - error
+    - not within time limit
     - room in lobby
     - player already ready
     - no cookie
     - session id invalid
     - send JSON message {status: "error", data: "[error message]"} 401
   - success
+    - within time limit
     - room not in lobby (correct state)
     - player not ready (hasn't send data yet)
     - session id valid

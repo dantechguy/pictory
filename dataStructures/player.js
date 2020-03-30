@@ -39,6 +39,22 @@ class Player {
     this.ready = false;
   }
 
+  setConnected() {
+    this.connected = true;
+  }
+
+  setDisconnected() {
+    this.connected = false;
+  }
+
+  isConnected() {
+    return this.connected;
+  }
+
+  isDisconnected() {
+    return !this.isConnected();
+  }
+
   isReady() {
     return this.ready;
   }
