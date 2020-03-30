@@ -3,9 +3,9 @@ var io;
 
 
 // required files
-var playerConnectDisconnectFunctions = require('./playerConnectDisconnect');
-var playerConnected = playerConnectDisconnectFunctions['connected'];
-var playerDisconnected = playerConnectDisconnectFunctions['disconnected'];
+var playerConnectionFunctions = require('./playerConnectDisconnect');
+var playerConnected = playerConnectionFunctions.connected;
+var playerDisconnected = playerConnectionFunctions.disconnected;
 var playerReady = require('./playerReady');
 
 

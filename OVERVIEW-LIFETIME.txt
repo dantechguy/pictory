@@ -44,14 +44,14 @@ Lifetime:
 - game state lobby
   - button to say if ready or not
   - list of all players and ready state
+  - PUT /done
+    - if error, display error
 - game state initial idea
   - input idea into box
   - submit button to send
   - PUT /data {data: "this is my prompt!"}
     - if error, display error
   - max limit of 32 chars
-  - PUT /done
-    - if error, display error
 - game state drawing prompt
   - GET /data
     - if error, display error
@@ -59,8 +59,6 @@ Lifetime:
   - draw in box
   - submit button to send
   - PUT /data {data: ""}
-    - if error, display error
-  - PUT /done
     - if error, display error
 - game state guessing prompt
   - GET /data
@@ -70,7 +68,6 @@ Lifetime:
   - submit button to send
   - PUT /data {data: "my guess!"}
     - if error, display error
-  - PUT /done
 - game state replay
   - carousel of users drawing chain
   - canvas drawings

@@ -38,6 +38,12 @@ class Rooms {
     let roomState = room.state;
     return roomState;
   }
+
+  getRoomTime(roomId) {
+    let room = this.getRoom(roomId);
+    let roomTime = room.time;
+    return roomTime;
+  }
 }
 
 module.exports = Rooms;

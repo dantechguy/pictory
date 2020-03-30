@@ -15,6 +15,18 @@ class Player {
     this.data;
   }
 
+  getFollowing() {
+    return this.following;
+  }
+
+  putData(data) {
+    this.data = data;
+  }
+
+  getData() {
+    return this.data;
+  }
+
   setToReady() {
     this.ready = true;
   }

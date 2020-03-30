@@ -27,7 +27,7 @@ class Room {
     let sessionId, player;
     for (let i = 0; i < this.players.length; i++) {
       sessionId = this.players[i];
-      player = players.getPlayerWithId(sessionId);
+      player = players.getPlayer(sessionId);
       if (player.isNotReady()) {
         return false;
       }

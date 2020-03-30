@@ -21,10 +21,10 @@ function whatIsWrongWithNameAndRoomId(data) {
 function generateListOfWhatIsWrongWithNameAndRoomId(data) {
   let whatIsWrongList = [];
   if (!nameIsValid(data.name)) {
-    whatIsWrongList.push(values.error.NAME);
+    whatIsWrongList.push(values.error.INVALID_NAME);
   };
   if (!roomIdIsValid(data.roomId)) {
-    whatIsWrongList.push(values.error.ROOM_ID);
+    whatIsWrongList.push(values.error.INVALID_ROOM_ID);
   }
   return whatIsWrongList;
 }

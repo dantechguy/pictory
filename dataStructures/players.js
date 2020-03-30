@@ -10,24 +10,39 @@ class Players {
     this.players = {}
   }
 
-  getPlayerWithId(sessionId) {
+  getPlayer(sessionId) {
     return this.players[sessionId];
   }
 
+  getFollowingPlayerSessionId(sessionId) {
+    return this.getPlayer(sessionId).getFollowing();
+  }
+
+  getFollowingPlayer(sessionId) {
+    return this.getPlayer(getFollowingPlayerSessionId(sessionId));
+  }
+
+  getFollowingPlayerData(sessionId) {
+    return getFollowingPlayer(sessionId).getData();
+  }
+
   getRoomIdFromSessionId(sessionId) {
-    let player = this.getPlayerWithId(sessionId);
-    let roomId = player.roomId;
-    return roomId;
+    let player = this.getPlayer(sessionId);
+    return player.roomId;
   }
 
-  isConnected(sessionId) {
-    let player = this.getPlayerWithId(sessionId);
-    let connected = player.connected;
-    return connected;
+  isPlayerReady(sessionId) {
+    let player = this.getPlayer(sessionId);
+    return player.ready;
   }
 
-  isDisconnected(sessionId) {
-    return !this.isConnected(sessionId);
+  isPlayerConnected(sessionId) {
+    let player = this.getPlayer(sessionId);
+    return player.connected;
+  }
+
+  isPlayerDisconnected(sessionId) {
+    return !this.isPlayerConnected(sessionId);
   }
 
   createPlayer(data) {
