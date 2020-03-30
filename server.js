@@ -1,9 +1,9 @@
 // required files
-var setupRoutingAndReturnServer = require('./routing/routing');
-var setupSockets = require('./sockets/sockets');
+const setupRoutingAndReturnServer = require('./routing/routing');
+const setupSockets = require('./sockets/sockets');
 const values = require('./public/values')
-var Rooms = require('./dataStructures/rooms');
-var Players = require('./dataStructures/players');
+const Rooms = require('./dataStructures/rooms');
+const Players = require('./dataStructures/players');
 
 
 // setup data structures

@@ -15,6 +15,44 @@ class Room {
     */
   }
 
+  startGame() {
+    this.assignFollowChain();
+    this.nextState();
+  }
+
+  // setting up follow chain
+  assignFollowChain() {
+    this.shufflePlayers();
+    this.players.forEach( (sessionId, index) => {
+      let player = players.getPlayer(sessionId);
+      let followPlayerIndex = (index+1) % this.players.length;
+      let followPlayerSessionId = this.players[followPlayerIndex];
+      player.setFollowing(followPlayerSessionId);
+    })
+  }
+
+  shufflePlayers() {
+    for (let i = this.players.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [this.players[i], this.players[j]] = [this.players[j], this.players[i]];
+    }
+  }
+
+  // state functions
+  nextState() {
+    this.setState(values.next[this.state]);
+  }
+
+  setState(state) {
+    this.state = values.state[state];
+  }
+
+  sendSocketReloadMessage() {
+    
+  }
+
+  // getters n helpers
+
   addPlayerWithSessionId(sessionId) {
     this.players.push(sessionId);
   }

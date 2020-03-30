@@ -37,6 +37,12 @@ const values = {
     NAME: /^[a-zA-Z]{3,8}$/,
     ROOM_ID: /^[0-9]{4}$/,
     SESSION_ID: /^[0-9]{10}$/,
+  },
+  next: {
+    LOBBY: 'IDEA',
+    IDEA: 'DRAW',
+    DRAW: 'GUESS',
+    GUESS: 'DRAW',
   }
 }
 

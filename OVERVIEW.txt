@@ -1,9 +1,5 @@
-Networking Rules:
-- only use web-sockets for direct server to client communication
-- all other data use HTTPS and RESTful API
-
 Where to work:
-- web-socket updates
+- web-socket updates, send reload message
 - game start routine
 - check all routes check for correct state and ready
 - is 50KB limit large enough for drawing data
@@ -159,6 +155,12 @@ Identifier and key rules:
   "name"
   "roomId"
   "sessionId"
+  "data"
+
+  Networking Rules:
+  - only use web-sockets for direct server to client communication
+  - all other data use HTTPS and RESTful API
+
 
 Using REST API:
   request = putData(url, "whatever data")

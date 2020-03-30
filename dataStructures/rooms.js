@@ -11,13 +11,22 @@ class Rooms {
     this.rooms = {};
   }
 
+  getRoom(roomId) {
+    return this.rooms[roomId];
+  }
+
   addPlayerToRoom(data) {
     let room = this.getRoom(data.roomId);
     room.addPlayerWithSessionId(data.sessionId);
   }
 
-  getRoom(roomId) {
-    return this.rooms[roomId];
+  startGame(roomId) {
+    this.getRoom(roomId).startGame();
+  }
+
+  allPlayersAreReady(roomId) {
+    let room = this.getRoom(roomId);
+    return room.allPlayersAreReady();
   }
 
   deleteRoom(roomId) {

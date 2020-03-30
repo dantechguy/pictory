@@ -3,10 +3,9 @@ var io;
 
 
 // required files
-var playerConnectionFunctions = require('./playerConnectDisconnect');
-var playerConnected = playerConnectionFunctions.connected;
-var playerDisconnected = playerConnectionFunctions.disconnected;
-var playerReady = require('./playerReady');
+const playerConnectionFunctions = require('./playerConnections');
+const playerConnected = playerConnectionFunctions.connected;
+const playerDisconnected = playerConnectionFunctions.disconnected;
 
 
 // functions
@@ -21,10 +20,6 @@ function setupSockets(server) {
       playerDisconnected(socket);
     });
 
-  });
-
-  io.on('ready', function(socket) {
-    playerReady(socket);
   });
 }
 

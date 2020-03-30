@@ -19,11 +19,11 @@ class Players {
   }
 
   getFollowingPlayer(sessionId) {
-    return this.getPlayer(getFollowingPlayerSessionId(sessionId));
+    return this.getPlayer(this.getFollowingPlayerSessionId(sessionId));
   }
 
   getFollowingPlayerData(sessionId) {
-    return getFollowingPlayer(sessionId).getData();
+    return this.getFollowingPlayer(sessionId).getData();
   }
 
   getRoomIdFromSessionId(sessionId) {

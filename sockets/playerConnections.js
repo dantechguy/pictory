@@ -1,5 +1,5 @@
 // requried files
-var getSessionIdFromSocket = require('./getSessionIdFromSocket');
+const getSessionIdFromSocket = require('./getSessionIdFromSocket');
 
 
 function playerConnected(socket) {

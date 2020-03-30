@@ -15,6 +15,10 @@ class Player {
     this.data;
   }
 
+  setFollowingTo(sessionId) {
+    this.following = sessionId;
+  }
+
   getFollowing() {
     return this.following;
   }

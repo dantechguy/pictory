@@ -24,7 +24,7 @@ function requestSuccess(data, res) {
   player.setToReady(); // set player to ready
   let responseJson = createResponseJson('success', '');
   res.json(responseJson);
-  tryToStartGame(data);
+  rooms.startGame(data.roomId);
 }
 
 module.exports = handleDataPutRequest;
