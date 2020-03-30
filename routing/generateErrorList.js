@@ -7,6 +7,7 @@ const errorToFunction = {
   'INVALID_SESSION_ID': sessionIdIsInvalid,
   'ROOM_NOT_STARTED': roomHasNotStarted,
   'PLAYER_READY': playerIsAlreadyReady,
+  'ROOM_ENDED': roomHasEnded,
 }
 
 function generateErrorList(errorList, data) {
@@ -63,6 +64,12 @@ function roomHasNotStarted(data) {
 function playerIsAlreadyReady(data) {
   let playerIsReady = players.isPlayerReady(data.sessionId);
   return playerIsReady;
+}
+
+function roomHasEnded(data) {
+  let roomExists = rooms.roomExists(data.roomId);
+  let roomEnded = roomExists && rooms.getRoomState(data.roomId) !== values.state.REPLAY;
+  return roomEnded;
 }
 
 module.exports = nameAndRoomIdErrorList;

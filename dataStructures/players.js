@@ -10,30 +10,60 @@ class Players {
     this.players = {}
   }
 
+  // standard methods
   getPlayer(sessionId) {
     return this.players[sessionId];
+  }
+
+  createPlayer(data) {
+    let player = new Player(data);
+    this.players[data.sessionId] = player;
+  }
+
+  deletePlayer(sessionId) {
+    delete this.players[sessionId];
+  }
+
+  // data access methods
+  getPlayerChainData(sessionId) {
+    return this.getPlayer(sessionId).getChainData();
+  }
+
+  getPlayerData(sessionId) {
+    return this.getPlayer(sessionId).getData();
+  }
+
+  moveNewDataToPreviousData(sessionId) {
+    this.getPlayer(sessionId).moveNewDataToPreviousData();
+  }
+
+  // following player access methods
+  getFollowingPlayerData(sessionId) {
+    return this.getPlayerData(this.getFollowingPlayerSessionId(sessionId));
   }
 
   getFollowingPlayerSessionId(sessionId) {
     return this.getPlayer(sessionId).getFollowing();
   }
 
-  getFollowingPlayer(sessionId) {
-    return this.getPlayer(this.getFollowingPlayerSessionId(sessionId));
-  }
-
-  getFollowingPlayerData(sessionId) {
-    return this.getFollowingPlayer(sessionId).getData();
-  }
-
+  // room id from player
   getRoomIdFromSessionId(sessionId) {
     let player = this.getPlayer(sessionId);
     return player.roomId;
   }
 
+  // player ready and connection access methods
   isPlayerReady(sessionId) {
     let player = this.getPlayer(sessionId);
     return player.ready;
+  }
+
+  setPlayerReady(sessionId) {
+    this.getPlayer(sessionId).setReady();
+  }
+
+  setPlayerNotReady(sessionId) {
+    this.getPlayer(sessionId).setNotReady();
   }
 
   isPlayerConnected(sessionId) {
@@ -45,9 +75,8 @@ class Players {
     return !this.isPlayerConnected(sessionId);
   }
 
-  createPlayer(data) {
-    let player = new Player(data);
-    this.players[data.sessionId] = player;
+  getPlayerName(sessionId) {
+    return this.getPlayer(sessionId).getName();
   }
 
   // session id generation

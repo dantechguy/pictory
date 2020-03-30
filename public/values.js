@@ -1,11 +1,14 @@
 const values = {
   url: {
+    INDEX: '/',
     GAME: '/game',
     JOIN: '/join',
-    READY: '/ready',
+    READY: '/done',
+    DATA: '/data',
+    TIME: '/time',
+    EXIT: '/exit'
   },
   cookie: {
-    DURATION: 15,
     SESSION_ID_KEY: 'sessionId',
   },
   error: {
@@ -17,6 +20,7 @@ const values = {
     PLAYER_CONNECTED: 'You have already joined this game.'
     ROOM_NOT_STARTED: 'The game has not started yet.',
     PLAYER_READY: 'You are already ready.',
+    ROOM_ENDED: 'The game has already ended.',
   },
   state: {
     LOBBY: 'LOBBY',
@@ -29,9 +33,11 @@ const values = {
     PUBLIC: './../public/',
     INDEX: 'index.html',
     LOBBY: 'lobby.html',
+    IDEA: 'idea.html',
     DRAW: 'draw.html',
     GUESS: 'guess.html',
     REPLAY: 'replay.html'
+    WAIT: 'wait.html'
   },
   regex: {
     NAME: /^[a-zA-Z]{3,8}$/,
@@ -43,6 +49,7 @@ const values = {
     IDEA: 'DRAW',
     DRAW: 'GUESS',
     GUESS: 'DRAW',
+    MAX_ROUNDS: 5,
   },
   socket: {
     RELOAD: 'RELOAD',

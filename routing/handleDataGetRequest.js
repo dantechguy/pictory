@@ -19,9 +19,17 @@ function handleDataPutRequest(req, res) {
 }
 
 function requestSuccess(data, res) {
-  let followingPlayerData = players.getFollowingPlayerData(data.sessionId);
-  let responseJson = createResponseJson('success', followingPlayerData);
+  if (roomHasEnded(data.roomId)) { // game has ended, send chain data
+    let playerData = players.getPlayerChainData(data.sessionId);
+  } else { // game is still going, send following player data
+    let playerData = players.getFollowingPlayerData(data.sessionId);
+  }
+  let responseJson = createResponseJson('success', playerData);
   res.json(responseJson);
+}
+
+function roomHasEnded(roomId) {
+  return rooms.getRoomState(roomId) === values.state.REPLAY;
 }
 
 module.exports = handleDataPutRequest;

@@ -8,13 +8,15 @@ class Player {
     this.name = data.name;
     this.roomId = data.roomId;
     this.socket;
-    this.connected;
+    this.connected = false;
     this.following;
-    this.ready;
-    this.chain;
-    this.data;
+    this.ready = false;
+    this.chain = [];
+    this.newData;
+    this.previousData;
   }
 
+  // following methods
   setFollowingTo(sessionId) {
     this.following = sessionId;
   }
@@ -23,22 +25,45 @@ class Player {
     return this.following;
   }
 
+  // data methods
   putData(data) {
-    this.data = data;
+    this.newData = data;
   }
 
   getData() {
-    return this.data;
+    return this.previousData;
   }
 
-  setToReady() {
+  putChainData(data) {
+    this.chainData.push(data);
+  }
+
+  getChainData() {
+    return this.chain;
+  }
+
+  moveNewDataToPreviousData() {
+    this.previousData = newData;
+  }
+
+  // ready methods
+  setReady() {
     this.ready = true;
   }
 
-  setToNotReady() {
+  setNotReady() {
     this.ready = false;
   }
 
+  isReady() {
+    return this.ready;
+  }
+
+  isNotReady() {
+    return !this.isReady();
+  }
+
+  // connected methods
   setConnected() {
     this.connected = true;
   }
@@ -55,12 +80,9 @@ class Player {
     return !this.isConnected();
   }
 
-  isReady() {
-    return this.ready;
-  }
-
-  isNotReady() {
-    return !this.isReady();
+  // name access methods
+  getName() {
+    return this.name;
   }
 }
 

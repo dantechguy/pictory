@@ -1,7 +1,7 @@
 Where to work:
-- check time limits work
+- next state functionality
+- implement time limits
 - web-socket updates, send reload message
-- game start routine
 - check all routes check for correct state and ready
 - is 50KB limit large enough for drawing data
 - check every user input for potential failure
@@ -54,7 +54,7 @@ GET /game
     - session id valid
     - user socket not connected
     - look at session id room
-    - look at room state
+    - look at room state AND player ready state
     - send html file for state
 GET /time
   - for client to display timer to end of state
@@ -62,10 +62,10 @@ GET /time
   - error
     - no cookie
     - session id invalid
-    - room in lobby
+    - room in lobby or replay
     - send JSON message {status: "error", data: "[error message]"} 401
   - success
-    - room not in lobby (correct state)
+    - room not in lobby or replay (correct state)
     - session id valid
     - look at session id room
     - look at room timer
@@ -76,20 +76,23 @@ PUT /data
   - session id cookie
   - error
     - not within time limit
-    - room in lobby
+    - room in lobby or replay
     - player already ready
     - no cookie
     - session id invalid
     - send JSON message {status: "error", data: "[error message]"} 401
   - success
     - within time limit
-    - room not in lobby (correct state)
+    - room not in lobby or replay (correct state)
     - player not ready (hasn't send data yet)
     - session id valid
     - look at session id profile
     - set profile data to data
     - set profile ready to true
     - send JSON message {status: "success", data: ""} 200
+    - if all players ready and connected
+      - try next state
+    - if not, send players-ready update
 GET /data
   - text or drawing data as your prompt
   - session id cookie
@@ -102,9 +105,15 @@ GET /data
     - not in lobby state
     - session id valid
     - look at session id profile
-    - look at following profile
-    - get following profile data
-    - send JSON message {status: "success", data: "[following data]"} 200
+    - room not in replay state
+      - look at following profile
+      - get following profile previous data
+      - send JSON message {status: "success", data: "[following data]"} 200
+    - room in replay state
+      - game has ended
+      - look at player profile
+      - get chain data
+      - send JSON message {status: "success", data: "[chain data]"} 200
 PUT /done
   - update once you are ready to start the game
   - session id cookie
@@ -120,12 +129,30 @@ PUT /done
     - set ready to true
     - send JSON message {status: "success", data: ""} 200
     - check if all players are ready
-      - start game
-      - assign random follow chain
-      - change state
-      - send web-socket reload message
+      - try next state
+    - send players-ready update
 POST /exit
   -
+
+Next state steps:
+- if state is lobby
+  - assign follow chain
+- move all player's new data into other player's chain
+  - chain stores all sequential prompt data, starting with that players idea
+  - if a player leaves, only their chain will be deleted
+  - other players' drawings and prompts in that chain are deleted too
+  - find target player's chain
+    - add round number to index, modulo, and access
+  - add data to target player's chain
+- move all players new data to previous
+- set all players not ready
+- check if round number > max rounds
+  - if not, still have rounds to play
+    - round number ++
+    - change to next state in cycle
+  - if round number > max rounds
+    - game over, set state to replay
+- send reload web-socket message
 
 Web-socket interactions:
 - Client:
@@ -142,6 +169,8 @@ Web-socket interactions:
       - add socket to profile
       - add socket to socket.io room
       - set 'connected' to true
+      - if all players ready
+        - try next state
     disconnected
       - disconnected from /game
       - changing page, reloading or leaving

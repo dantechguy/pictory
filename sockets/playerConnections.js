@@ -9,6 +9,7 @@ function playerConnected(socket) {
   player.socket = socket;
   let roomId = player.roomId;
   socket.join(roomId);
+  room.tryToMoveToNextState(roomId);
 }
 
 function playerDisconnected(socket) {
@@ -18,7 +19,7 @@ function playerDisconnected(socket) {
   player.socket = undefined;
   let roomId = player.roomId;
   socket.leave(roomId);
-  
+  rooms.deleteRoomIfAllPlayersDisconnected(roomId);
 }
 
 module.exports = {

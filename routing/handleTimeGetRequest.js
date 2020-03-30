@@ -7,7 +7,7 @@ const generateErrorList = require('./generateErrorList');
 
 function handleTimeGetRequest(req, res) {
   let data = generateDataJson(req);
-  let errorsToCheck = ['ROOM_NOT_STARTED']; // session id check already done in routing
+  let errorsToCheck = ['ROOM_NOT_STARTED', 'ROOM_ENDED']; // session id check already done in routing
   let errorList = generateErrorList(errorsToCheck, data);
   let noErrors = errorList.length === 0;
 

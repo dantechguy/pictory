@@ -16,28 +16,47 @@ class Rooms {
     return this.rooms[roomId];
   }
 
+  deleteRoomIfAllPlayersDisconnected(roomId) {
+    if (allPlayersDisconnected(roomId)) {
+      this.deleteRoom(roomId);
+    }
+  }
+
+  allPlayersDisconnected(roomId) {
+    return this.getRoom(roomId).allPlayersDisconnected();
+  }
+
   addPlayerToRoom(data) {
     let room = this.getRoom(data.roomId);
     room.addPlayerWithSessionId(data.sessionId);
   }
 
-  tryToStartGame(roomId) {
-    if (this.allPlayersAreReady(roomId)) {
-      this.startGame(roomId);
+  tryToMoveToNextState(roomId) {
+    if (this.allPlayersAreReadyAndConnected(roomId)) {
+      this.moveToNextState(roomId);
     }
   }
 
-  startGame(roomId) {
-    this.getRoom(roomId).startGame();
+  sendSocketPlayerReadyUpdate(roomId) {
+    this.getRoom(roomId).sendSocketPlayerReadyUpdate();
   }
 
-  allPlayersAreReady(roomId) {
+  moveToNextState(roomId) {
+    this.getRoom(roomId).nextState();
+  }
+
+  allPlayersAreReadyAndConnected(roomId) {
     let room = this.getRoom(roomId);
-    return room.allPlayersAreReady();
+    return room.allPlayersAreReadyAndConnected();
   }
 
   deleteRoom(roomId) {
+    this.deleteAllPlayers(roomId)
     delete this.rooms[roomId];
+  }
+
+  deleteAllPlayers(roomId) {
+    this.getRoom(roomId).deleteAllPlayers();
   }
 
   createRoom(roomId) {

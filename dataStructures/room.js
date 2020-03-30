@@ -10,31 +10,79 @@ class Room {
     this.sendRoomMessage = sendRoomMessageFunction(this.roomId);
   }
 
-  startGame() {
-    this.assignFollowChain();
-    this.nextState();
+  // state functions
+  nextState() { // next state main function call
+    if (this.state === values.state.LOBBY) {
+      this.assignFollowChain();
+    }
+    this.moveAllPlayerDataToTargetPlayerChain();
+    this.moveAllNewPlayerDataToPreviousData();
+    this.setAllPlayersNotReady();
+    if (this.gameOver()) {
+      this.changeToReplayState();
+    } else {
+      this.changeToNextState();
+      this.round++;
+    }
+    sendSocketReloadMessage();
   }
 
   // setting up follow chain
   assignFollowChain() {
+    let player, followPlayerIndex, followPlayerSessionId;
     this.shufflePlayers();
     this.players.forEach( (sessionId, index) => {
-      let player = players.getPlayer(sessionId);
-      let followPlayerIndex = (index+1) % this.players.length;
-      let followPlayerSessionId = this.players[followPlayerIndex];
+      player = players.getPlayer(sessionId);
+      followPlayerIndex = (index+1) % this.players.length;
+      followPlayerSessionId = this.players[followPlayerIndex];
       player.setFollowing(followPlayerSessionId);
     })
   }
 
   shufflePlayers() {
     for (let i = this.players.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [this.players[i], this.players[j]] = [this.players[j], this.players[i]];
+      const j = Math.floor(Math.random() * (i + 1));
+      [this.players[i], this.players[j]] = [this.players[j], this.players[i]];
     }
   }
 
-  // state functions
-  nextState() {
+  // move new player data to target players chain
+  moveAllPlayerDataToTargetPlayerChain() {
+    this.players.forEach(this.moveAllPlayerDataToTargetPlayerChain);
+  }
+
+  movePlayerDataTargetPlayerChain(sessionId, index) {
+    let data = players.getPlayerData(sessionId);
+    let targetPlayerIndex = (index + this.round) % this.players.length;
+    let targetPlayerSessionId = this.players[targetPlayerIndex];
+    players.getPlayer(targetPlayerSessionId).putChainData(data);
+  }
+
+  // move new data to previous data method
+  moveAllNewPlayerDataToPreviousData() {
+    this.players.forEach((sessionId) => {
+      players.moveNewDataToPreviousData(sessionId);
+    })
+  }
+
+  // set all players not ready method
+  setAllPlayersNotReady() {
+    this.players.forEach((sessionId) => {
+      players.setPlayerNotReady(sessionId);
+    })
+  }
+
+  // if game is finished method
+  gameOver() {
+    return this.state === values.state.REPLAY || this.round > values.next.MAX_ROUNDS;
+  }
+
+  // next state methods
+  changeToReplayState() {
+    this.setState(values.state.REPLAY);
+  }
+
+  changeToNextState() {
     this.setState(values.next[this.state]);
   }
 
@@ -46,8 +94,21 @@ class Room {
     this.sendRoomMessage(values.socket.RELOAD);
   }
 
-  // getters n helpers
+  // send player ready update
+  sendSocketPlayerReadyUpdate() {
+    let playerReadyJson = this.generatePlayerReadyJson();
+    this.sendRoomMessage(values.socket.UPDATE_PLAYERS, readyJson);
+  }
 
+  generatePlayerReadyJson() {
+    let readyJson = {};
+    this.players.forEach((sessionId) => {
+      readyJson[players.getPlayerName(sessionId)] = players.isPlayerReady(sessionId);
+    });
+
+  }
+
+  // getters n helpers
   addPlayerWithSessionId(sessionId) {
     this.players.push(sessionId);
   }
@@ -56,15 +117,27 @@ class Room {
     return this.players.includes(name);
   }
 
-  allPlayersAreReady() {
-    let sessionId, player;
-    for (let i = 0; i < this.players.length; i++) {
-      sessionId = this.players[i];
-      player = players.getPlayer(sessionId);
+  deleteAllPlayers() {
+    this.players.forEach( (sessionId) => {
+      players.deletePlayer(sessionId);
+    });
+  }
+
+  allPlayersDisconnected() {
+    this.players.forEach( (sessionId) => {
+      if (player.isConnected()) {
+        return false;
+      }
+    });
+    return true;
+  }
+
+  allPlayersAreReadyAndConnected() {
+    this.players.forEach( (sessionId) => {
       if (player.isNotReady() || player.isDisconnected()) {
         return false;
       }
-    }
+    });
     return true;
   }
 }

@@ -7,7 +7,7 @@ const generateErrorList = require('./generateErrorList');
 
 function handleDataPutRequest(req, res) {
   let data = generateDataJson(req);
-  let errorsToCheck = ['ROOM_NOT_STARTED', 'PLAYER_READY']; // session id check already done in routing
+  let errorsToCheck = ['ROOM_NOT_STARTED', 'PLAYER_READY', 'ROOM_ENDED']; // session id check already done in routing
   let errorList = generateErrorList(errorsToCheck, data);
   let noErrors = errorList.length === 0;
 
@@ -21,9 +21,10 @@ function handleDataPutRequest(req, res) {
 function requestSuccess(data, res) {
   let player = players.getPlayer(data.sessionId);
   player.putData(data.data); // prompt data
-  player.setToReady(); // set player to ready
+  player.setReady(); // set player to ready
   let responseJson = createResponseJson('success', '');
   res.json(responseJson);
+  rooms.tryToMoveToNextState(data.roomId);
 }
 
 module.exports = handleDataPutRequest;

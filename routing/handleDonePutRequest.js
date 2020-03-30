@@ -20,10 +20,11 @@ function handleDataPutRequest(req, res) {
 
 function requestSuccess(data, res) {
   let player = players.getPlayer(data.sessionId);
-  player.setToReady(); // set player to ready
+  player.setReady(); // set player to ready
   let responseJson = createResponseJson('success', '');
   res.json(responseJson);
-  rooms.tryToStartGame(data.roomId);
+  rooms.sendSocketPlayerReadyUpdate(roomId);
+  rooms.tryToMoveToNextState(data.roomId);
 }
 
 module.exports = handleDataPutRequest;
