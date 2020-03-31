@@ -1,3 +1,3 @@
-Short Url Link: [danwb.com/pict](https://danwb.com/pict2)
+# PICTORY
 
-Full Url Link: [danwb-pict.herokuapp.com](https://danwb-pict2.herokuapp.com/)
+Not hosted yet, still WIP.

@@ -1,7 +1,5 @@
 Where to work:
 - remove all 'rooms' intermediary methods, just use straight 'room'
-- if all players /exit, will disconnect delete room twice?
-- implement time limits
 - check all routes check for correct state and ready
 - is 50KB limit large enough for drawing data
 - check every user input for potential failure
