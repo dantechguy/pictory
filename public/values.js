@@ -49,11 +49,20 @@ const values = {
     IDEA: 'DRAW',
     DRAW: 'GUESS',
     GUESS: 'DRAW',
+    REPLAY: 'REPLAY',
     MAX_ROUNDS: 5,
   },
   socket: {
     RELOAD: 'RELOAD',
     UPDATE_PLAYERS: 'UPDATE_PLAYERS'
+  },
+  time: {
+    IDEA: 60 *1000,
+    DRAW: 120 *1000,
+    GUESS: 30 *1000,
+    PUT_DATA_INTERVAL: 10 *1000, // every n seconds their data is uploaded
+    PUT_DATA_FINAL: 3 *1000, // time before finish which data is uploaded
+    CONNECT: 30 *1000, // non connected players have n seconds to re-connect or be removed
   }
 }
 

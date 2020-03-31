@@ -7,7 +7,7 @@ const generateErrorList = require('./generateErrorList');
 
 function handleDataPutRequest(req, res) {
   let data = generateDataJson(req);
-  let errorsToCheck = ['ROOM_STARTED']; // session id check already done in routing
+  let errorsToCheck = ['ROOM_ENDED', 'PLAYER_READY']; // session id check already done in routing
   let errorList = generateErrorList(errorsToCheck, data);
   let noErrors = errorList.length === 0;
 
@@ -23,7 +23,7 @@ function requestSuccess(data, res) {
   player.setReady(); // set player to ready
   let responseJson = createResponseJson('success', '');
   res.json(responseJson);
-  rooms.sendSocketPlayerReadyUpdate(roomId);
+  rooms.sendSocketPlayerStatusUpdate(roomId);
   rooms.tryToMoveToNextState(data.roomId);
 }
 

@@ -1,9 +1,6 @@
-
-
-
 // required files
-let Room = require('./room');
-
+const Room = require('./room');
+const stateTime = require('./stateTime');
 
 // classes
 class Rooms {
@@ -37,8 +34,8 @@ class Rooms {
     }
   }
 
-  sendSocketPlayerReadyUpdate(roomId) {
-    this.getRoom(roomId).sendSocketPlayerReadyUpdate();
+  sendSocketPlayerStatusUpdate(roomId) {
+    this.getRoom(roomId).sendSocketPlayerStatusUpdate();
   }
 
   moveToNextState(roomId) {
@@ -50,8 +47,9 @@ class Rooms {
     return room.allPlayersAreReadyAndConnected();
   }
 
-  deleteRoom(roomId) {
-    this.deleteAllPlayers(roomId)
+  deleteRoom(roomId) { // all players have disconnected
+    this.deleteAllPlayers(roomId);
+    stateTime.cancelPreviousTimeouts(this.getRoom(roomId));
     delete this.rooms[roomId];
   }
 

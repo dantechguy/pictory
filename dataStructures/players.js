@@ -79,6 +79,15 @@ class Players {
     return this.getPlayer(sessionId).getName();
   }
 
+  // exit methods
+  setPlayerToExit(sessionId) {
+    this.getPlayer(sessionId).setToExit();
+  }
+
+  isPlayerToExit(sessionId) {
+    this.getPlayer(sessionId).isToExit();
+  }
+
   // session id generation
   createPlayerReturnSessionId(data) {
     let sessionId = this.createNewUniqueSessionId();

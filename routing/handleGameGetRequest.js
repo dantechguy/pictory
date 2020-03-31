@@ -21,10 +21,14 @@ function handleGameGetRequest(req, res) {
 };
 
 function requestSuccess(data, res) {
-  let roomId = players.getRoomIdFromSessionId(data.sessionId);
-  let roomState = rooms.getRoomState(roomId);
+  if (players.isPlayerReady(data.sessionId)) { // if player is ready, send wait-screen
+    let state = values.state.WAIT;
+  } else {  // if player is not ready, send data input screen
+    let roomId = players.getRoomIdFromSessionId(data.sessionId);
+    let state = rooms.getRoomState(roomId);
+  }
 
-  let fileName = values.file[roomState];
+  let fileName = values.file[state];
   respondWithFile(res, fileName);
 }
 

@@ -1,3 +1,5 @@
+const nextState = require('./nextState');
+
 // classes
 class Room {
   constructor(roomId, sendRoomMessageFunction) {
@@ -5,71 +7,13 @@ class Room {
     this.players = [];
     this.state = values.state.LOBBY;
     this.round = 0;
-    this.time; // UTC timestamp to end of round
+    this.time; // unix timestamp to end of round
     // function passed from socket server init
     this.sendRoomMessage = sendRoomMessageFunction(this.roomId);
-  }
-
-  // state functions
-  nextState() { // next state main function call
-    if (this.state === values.state.LOBBY) {
-      this.assignFollowChain();
-    }
-    this.moveAllPlayerDataToTargetPlayerChain();
-    this.moveAllNewPlayerDataToPreviousData();
-    this.setAllPlayersNotReady();
-    if (this.gameOver()) {
-      this.changeToReplayState();
-    } else {
-      this.changeToNextState();
-      this.round++;
-    }
-    sendSocketReloadMessage();
-  }
-
-  // setting up follow chain
-  assignFollowChain() {
-    let player, followPlayerIndex, followPlayerSessionId;
-    this.shufflePlayers();
-    this.players.forEach( (sessionId, index) => {
-      player = players.getPlayer(sessionId);
-      followPlayerIndex = (index+1) % this.players.length;
-      followPlayerSessionId = this.players[followPlayerIndex];
-      player.setFollowing(followPlayerSessionId);
-    })
-  }
-
-  shufflePlayers() {
-    for (let i = this.players.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [this.players[i], this.players[j]] = [this.players[j], this.players[i]];
-    }
-  }
-
-  // move new player data to target players chain
-  moveAllPlayerDataToTargetPlayerChain() {
-    this.players.forEach(this.moveAllPlayerDataToTargetPlayerChain);
-  }
-
-  movePlayerDataTargetPlayerChain(sessionId, index) {
-    let data = players.getPlayerData(sessionId);
-    let targetPlayerIndex = (index + this.round) % this.players.length;
-    let targetPlayerSessionId = this.players[targetPlayerIndex];
-    players.getPlayer(targetPlayerSessionId).putChainData(data);
-  }
-
-  // move new data to previous data method
-  moveAllNewPlayerDataToPreviousData() {
-    this.players.forEach((sessionId) => {
-      players.moveNewDataToPreviousData(sessionId);
-    })
-  }
-
-  // set all players not ready method
-  setAllPlayersNotReady() {
-    this.players.forEach((sessionId) => {
-      players.setPlayerNotReady(sessionId);
-    })
+    // function for handling changing next state
+    this.nextState = nextState;
+    // variable for cancelling and setting timeouts for forcing nextState
+    this.timeOut;
   }
 
   // if game is finished method
@@ -77,38 +21,45 @@ class Room {
     return this.state === values.state.REPLAY || this.round > values.next.MAX_ROUNDS;
   }
 
-  // next state methods
-  changeToReplayState() {
-    this.setState(values.state.REPLAY);
-  }
-
-  changeToNextState() {
-    this.setState(values.next[this.state]);
-  }
-
   setState(state) {
     this.state = values.state[state];
   }
 
-  sendSocketReloadMessage() {
-    this.sendRoomMessage(values.socket.RELOAD);
+  timeLimitHasFinished() {
+    return new Date() > this.time;
   }
 
   // send player ready update
-  sendSocketPlayerReadyUpdate() {
-    let playerReadyJson = this.generatePlayerReadyJson();
-    this.sendRoomMessage(values.socket.UPDATE_PLAYERS, readyJson);
+  sendSocketPlayerStatusUpdate() {
+    let playerStatusJson = this.generatePlayerStatusJson();
+    this.sendRoomMessage(values.socket.UPDATE_PLAYERS, playerStatusJson);
   }
 
-  generatePlayerReadyJson() {
-    let readyJson = {};
+  generatePlayerStatusJson() {
+    let statusJson = {};
     this.players.forEach((sessionId) => {
-      readyJson[players.getPlayerName(sessionId)] = players.isPlayerReady(sessionId);
+      let playerJson = {
+        ready: players.isPlayerReady(sessionId),
+        connected: players.isPlayerConnected(sessionId),
+      };
+      statusJson[players.getPlayerName(sessionId)] = playerJson;
     });
 
   }
 
   // getters n helpers
+  setAllPlayersNotReady(room) {
+    room.players.forEach((sessionId) => {
+      players.setPlayerNotReady(sessionId);
+    })
+  }
+
+  setAllPlayersReady(room) {
+    room.players.forEach((sessionId) => {
+      players.setPlayerReady(sessionId);
+    })
+  }
+
   addPlayerWithSessionId(sessionId) {
     this.players.push(sessionId);
   }
@@ -117,23 +68,43 @@ class Room {
     return this.players.includes(name);
   }
 
-  deleteAllPlayers() {
-    this.players.forEach( (sessionId) => {
+  getState() {
+    return this.state;
+  }
+
+  deleteAllPlayers() { // fix so also removes from room, uses function
+    this.players.forEach((sessionId) => {
       players.deletePlayer(sessionId);
+      this.removePlayer(sessionId);
     });
   }
 
-  allPlayersDisconnected() {
-    this.players.forEach( (sessionId) => {
-      if (player.isConnected()) {
-        return false;
-      }
+  removePlayer(sessionId) {
+    this.players = this.players.filter((arraySessionId) => {
+      return arraySessionId !== sessionId;
     });
-    return true;
+  }
+
+  getPlayers() {
+    return this.players;
+  }
+
+  getDisconnectedPlayers() {
+    let disconnectedPlayers = this.players.filter((sessionId) => {
+      return players.isPlayerDisconnected(sessionId);
+    });
+  }
+
+  allPlayersConnected() { // no one is disconnected
+    return getDisconnectedPlayers().length === 0;
+  }
+
+  allPlayersDisconnected() { // everyone is disconnected
+    return getDisconnectedPlayers().length === this.players.length;
   }
 
   allPlayersAreReadyAndConnected() {
-    this.players.forEach( (sessionId) => {
+    this.players.forEach((sessionId) => {
       if (player.isNotReady() || player.isDisconnected()) {
         return false;
       }

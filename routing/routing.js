@@ -8,7 +8,7 @@ var server;
 const path = require('path');
 const express = require('express');
 const responseFunctions = require('./responseFunctions');
-const checkSessionId = responseFunctions.sessionId;
+const denyInvalidSessionId = responseFunctions.sessionId;
 const handleIndexGetRequest = require('./handleIndexGetRequest');
 const handleJoinPostRequest = require('./handleJoinPutRequest');
 const handleGameGetRequest = require('./handleGameGetRequest');
@@ -32,7 +32,7 @@ function setupRoutingAndReturnServer() {
   });
 
   app.all('/(game|time|data|done|exit)', (req, res) => { // cuts out any request with invalid session id
-    checkSessionId(req, res);
+    denyInvalidSessionId(req, res);
   });
 
   app.get('/game', (req, res) => {

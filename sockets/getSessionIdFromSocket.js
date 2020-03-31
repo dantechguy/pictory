@@ -1,7 +1,3 @@
-// required files
-const parseCookieString = require('./parseCookieString');
-
-
 function getSessionIdFromSocket(socket) {
   let cookieString = socket.handshake.headers.cookie;
   let sessionId = getCookieFromSting(cookieString, values.cookie.SESSION_ID_KEY);

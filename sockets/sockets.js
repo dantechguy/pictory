@@ -3,9 +3,7 @@ var io;
 
 
 // required files
-const playerConnectionFunctions = require('./playerConnections');
-const playerConnected = playerConnectionFunctions.connected;
-const playerDisconnected = playerConnectionFunctions.disconnected;
+const playerConnection = require('./playerConnections');
 const sendRoomMessageFunctionFunction = require('./sendRoomMessage');
 
 
@@ -15,10 +13,10 @@ function setupSockets(server) {
   io = require('socket.io')(server);
 
   io.on('connection', function(socket) {
-    playerConnected(socket);
+    playerConnection.connected(socket);
 
     socket.on('disconnect', function(socket) {
-      playerDisconnected(socket);
+      playerConnection.disconnected(socket);
     });
 
   });

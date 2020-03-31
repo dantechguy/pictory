@@ -1,13 +1,14 @@
 Where to work:
-- next state functionality
+- remove all 'rooms' intermediary methods, just use straight 'room'
+- if all players /exit, will disconnect delete room twice?
 - implement time limits
-- web-socket updates, send reload message
 - check all routes check for correct state and ready
 - is 50KB limit large enough for drawing data
 - check every user input for potential failure
 - lobby.html and other game state files
 - style.css
 - allow players to leave mid-game by pressing 'leave'
+- client send constant PUT /data updates during timer (if input update)
 - plan and do all client side stuff
 
 Players leaving:
@@ -15,9 +16,10 @@ Players leaving:
 - game will not change state until all players are connected and ready
   - if timer hits zero
     - non connected players have 30 seconds to connect before removed
-    - non ready players are set to ready and data is sent
-- players can permanently leave game via leave button, for next state
+    - non ready players are set to ready
+- players can permanently leave game via leave button, for next round
   - will remove that player from the follow chain after next change
+  - delete players data chain
   - connect new neighbours in chain
   - figure out how to re-sort chain, delete left players chain
 
@@ -71,7 +73,7 @@ GET /time
     - look at room timer
     - send JSON message {status: "success", data: "[UTC timestamp]"} 200
 PUT /data
-  - text or drawing data you have made
+  - updating the text or drawing data you have made
   - request body JSON {data: "text prompt"} or {data: "[drawing data]"}
   - session id cookie
   - error
@@ -88,11 +90,7 @@ PUT /data
     - session id valid
     - look at session id profile
     - set profile data to data
-    - set profile ready to true
     - send JSON message {status: "success", data: ""} 200
-    - if all players ready and connected
-      - try next state
-    - if not, send players-ready update
 GET /data
   - text or drawing data as your prompt
   - session id cookie
@@ -118,12 +116,12 @@ PUT /done
   - update once you are ready to start the game
   - session id cookie
   - error
-    - not in lobby state (game already started)
+    - in replay state (game ended)
     - no cookie
     - session id invalid
     - send JSON message {status: "error", data: "[error message]"} 401
   - success
-    - game in lobby state (not started)
+    - not in replay state (game still going)
     - session id valid
     - look at session id profile
     - set ready to true
@@ -135,6 +133,14 @@ POST /exit
   -
 
 Next state steps:
+- cancel previous timeouts
+- remove all players who will exit (/exit, or not connected)
+  - find all players not connected
+  - locate an exit player
+    - find index
+    - set previous player 'following' to exit player 'following'
+    - remove player from room
+    - remove player from 'players'
 - if state is lobby
   - assign follow chain
 - move all player's new data into other player's chain
@@ -150,37 +156,56 @@ Next state steps:
   - if not, still have rounds to play
     - round number ++
     - change to next state in cycle
+    - update new Unix timestamp
+    - set timeout to call-back for state timer (new round!), 'nextState' cancels timeout
   - if round number > max rounds
     - game over, set state to replay
 - send reload web-socket message
+
+- after time limit (someone not connected or ready), 'nextState' hasn't been called
+- force nextState change
+- switch all players to ready
+- if all players connected
+  - call tryToMoveToNextState method
+- if not all players are connected
+  - set timeout call-back for connect time, 'nextState' cancels timeout
+
+- after second time limit, 'nextState' still hasn't been called
+- someone not connecting, getting kicked
+- find non connected players
+- set 'exit' attribute to true
+- call tryToMoveToNextState method
 
 Web-socket interactions:
 - Client:
     reload
       - game state has updated, reload page
     playersReady
-      - updated when new players are ready {"dan":true, "fed":false}
+      - updated when new players are ready or connected {"dan":{ready:true, connected:false}, "fed":{ready:true, connected:true}}
 - Server:
     connected
       - connected at /game
       - just joined, changing state, or reloading
       - get session id cookie
-      - file profile for session id
-      - add socket to profile
-      - add socket to socket.io room
-      - set 'connected' to true
-      - if all players ready
-        - try next state
+      - if session id is valid
+        - file profile for session id
+        - add socket to profile
+        - add socket to socket.io room
+        - set 'connected' to true
+        - if all players ready
+          - try next state
     disconnected
       - disconnected from /game
       - changing page, reloading or leaving
       - get session id from cookie
-      - find profile for session id
-      - remove socket from profile
       - remove socket from socket.io room
-      - set 'connected' to false
-      - if all players are disconnected
-        - delete room and players
+      - if session id is valid
+        - find profile for session id
+        - remove socket from profile
+        - set 'connected' to false
+        - if all players are disconnected
+          - clear previous timeouts
+          - delete room and players
 
 Identifier and key rules:
   "name"

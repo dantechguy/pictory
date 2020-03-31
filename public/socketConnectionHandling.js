@@ -4,10 +4,10 @@
 
 var socket = io();
 
-var playersReady = {};
+var playerStatusJson = {};
 
 // socket.on('connection', function(data) {});
 
-socket.on('playersReady', function(playersReadyJSON) {
-  playersReady = playersReadyJSON;
+socket.on(values.socket.UPDATE_PLAYERS, function(data) {
+  playerStatusJson = data;
 })

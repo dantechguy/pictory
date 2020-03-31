@@ -14,6 +14,7 @@ class Player {
     this.chain = [];
     this.newData;
     this.previousData;
+    this.exit = false;
   }
 
   // following methods
@@ -83,6 +84,15 @@ class Player {
   // name access methods
   getName() {
     return this.name;
+  }
+
+  // exit methods
+  setToExit() {
+    this.exit = true;
+  }
+
+  isToExit() {
+    return this.exit;
   }
 }
 

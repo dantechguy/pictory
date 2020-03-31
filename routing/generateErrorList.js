@@ -8,6 +8,7 @@ const errorToFunction = {
   'ROOM_NOT_STARTED': roomHasNotStarted,
   'PLAYER_READY': playerIsAlreadyReady,
   'ROOM_ENDED': roomHasEnded,
+  'TIME_LIMIT': timeLimitHasFinished,
 }
 
 function generateErrorList(errorList, data) {
@@ -70,6 +71,10 @@ function roomHasEnded(data) {
   let roomExists = rooms.roomExists(data.roomId);
   let roomEnded = roomExists && rooms.getRoomState(data.roomId) !== values.state.REPLAY;
   return roomEnded;
+}
+
+function timeLimitHasFinished(data) {
+  return rooms.getRoom(data.roomId).timeLimitHasFinished();
 }
 
 module.exports = nameAndRoomIdErrorList;
