@@ -48,20 +48,10 @@ function checkNameAndRoomId() {
 
 // sending and processing join request
 function sendPostJoinRequest(data) {
-  let requestJsonBody = generatePostJoinRequestJsonBody(data);
+  let requestJsonBody = data;
   postData(values.url.JOIN, requestJsonBody)
-  .then((data) => {goToUrl(values.url.GAME)}))
+  .then((data) => {goToUrl(values.url.GAME)})
   .catch(showError);
-}
-
-function generatePostJoinRequestJsonBody(data) {
-  let name = data.name;
-  let roomId = data.roomId;
-  let requestJsonBody = {
-    name: name,
-    roomId: roomId
-  };
-  return requestJsonBody;
 }
 
   </script>

@@ -14,7 +14,8 @@ class Rooms {
   }
 
   deleteRoomIfAllPlayersDisconnected(roomId) {
-    if (allPlayersDisconnected(roomId)) {
+    if (this.allPlayersDisconnected(roomId)) {
+      l('deleting room', roomId)
       this.deleteRoom(roomId);
     }
   }
@@ -30,6 +31,7 @@ class Rooms {
 
   tryToMoveToNextState(roomId) {
     if (this.allPlayersAreReadyAndConnected(roomId)) {
+      l('all players ready')
       this.moveToNextState(roomId);
     }
   }

@@ -92,8 +92,8 @@ class Players {
   createPlayerReturnSessionId(data) {
     let sessionId = this.createNewUniqueSessionId();
     data.sessionId = sessionId;
-    rooms.addPlayerToRoom(data);
     this.createPlayer(data);
+    rooms.addPlayerToRoom(data);
     return sessionId;
   }
 

@@ -17,6 +17,10 @@ class Player {
     this.exit = false;
   }
 
+  t() {
+    return `<${this.roomId} ${this.name.padEnd(8, ' ')} ${this.connected ? 'o' : 'x'}${this.ready ? 'o' : 'x'}>`;
+  }
+
   // following methods
   setFollowingTo(sessionId) {
     this.following = sessionId;

@@ -7,10 +7,11 @@ var server;
 // required files
 const path = require('path');
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const responseFunctions = require('./responseFunctions');
 const denyInvalidSessionId = responseFunctions.sessionId;
 const handleIndexGetRequest = require('./handleIndexGetRequest');
-const handleJoinPostRequest = require('./handleJoinPutRequest');
+const handleJoinPostRequest = require('./handleJoinPostRequest');
 const handleGameGetRequest = require('./handleGameGetRequest');
 const handleTimeGetRequest = require('./handleTimeGetRequest');
 const handleDataPutRequest = require('./handleDataPutRequest');
@@ -23,6 +24,7 @@ function setupRoutingAndReturnServer() {
 
   app = express();
   app.use(express.json({ limit: '50KB' })); // allows json body to be automatically parsed, limits size to 50KB
+  app.use(cookieParser());
   server = app.listen(process.env.PORT || 3000);
 
   app.use(express.static(path.resolve(__dirname + publicFolder)));
@@ -31,8 +33,8 @@ function setupRoutingAndReturnServer() {
     handleJoinPostRequest(req, res);
   });
 
-  app.all('/(game|time|data|done|exit)', (req, res) => { // cuts out any request with invalid session id
-    denyInvalidSessionId(req, res);
+  app.all('/*', (req, res, next) => { // cuts out any request with invalid session id
+    denyInvalidSessionId(req, res, next);
   });
 
   app.get('/game', (req, res) => {

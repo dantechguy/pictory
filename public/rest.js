@@ -14,7 +14,7 @@ function putData(url, data) {
 function request(type, url, data) {
   let promise = new Promise((resolve, reject) => {
     fetchRequest(type, url, data)
-    .then(handleFetchThen)
+    .then(handleFetchThen(resolve, reject))
     .catch((networkError) => { // fetch only fails on network errors
       reject(networkError);
     });
@@ -22,23 +22,28 @@ function request(type, url, data) {
   return promise;
 }
 
-function handleFetchThen(response) {
-  if (responseIsSuccessful(response)) {
-    resolve(response.json().data)
-  } else {
-    reject(response.json().data)
-  }
+function handleFetchThen(resolve, reject) {
+  return (response) => {
+    let statusIsOk = response.ok;
+    response.json().then(responseJson => { // responseJson is another promise
+      if (responseIsSuccessful(statusIsOk, responseJson)) {
+        resolve(responseJson.data)
+      } else {
+        reject(responseJson.data)
+      }
+    });
+  };
 }
 
-function responseIsSuccessful(response) {
-  return repsonse.ok && response.json().status === 'success';
+function responseIsSuccessful(statusIsOk, responseJson) {
+  return statusIsOk && responseJson.status === 'success';
 }
 
 function fetchRequest(type, url, data) {
   const init = {
     method: type,
-    contentType: "application/json",  // redundant with get, but used for put and post
-    body: data,   // only sends data when provided, eg put and post
+    headers: {'Content-Type': 'application/json'},  // redundant with get, but used for put and post
+    body: JSON.stringify(data),   // only sends data when provided, eg put and post
     credentials: "same-origin", // to send cookies, eg session idea. might be default
   }
   return fetch(url, init);

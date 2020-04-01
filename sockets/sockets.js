@@ -15,7 +15,7 @@ function setupSockets(server) {
   io.on('connection', function(socket) {
     playerConnection.connected(socket);
 
-    socket.on('disconnect', function(socket) {
+    socket.on('disconnect', function() {
       playerConnection.disconnected(socket);
     });
 

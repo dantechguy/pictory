@@ -17,10 +17,11 @@ const values = {
     ROOM_STARTED: 'This game has already started.',
     NAME_TAKEN: 'This name has already been taken in this room.',
     INVALID_SESSION_ID: 'The session ID provided is invalid.',
-    PLAYER_CONNECTED: 'You have already joined this game.'
+    PLAYER_CONNECTED: 'You have already joined this game.',
     ROOM_NOT_STARTED: 'The game has not started yet.',
     PLAYER_READY: 'You are already ready.',
     ROOM_ENDED: 'The game has already ended.',
+    TIME_LIMIT: 'The game has exceeded the time limit',
   },
   state: {
     LOBBY: 'LOBBY',
@@ -36,8 +37,8 @@ const values = {
     IDEA: 'idea.html',
     DRAW: 'draw.html',
     GUESS: 'guess.html',
-    REPLAY: 'replay.html'
-    WAIT: 'wait.html'
+    REPLAY: 'replay.html',
+    WAIT: 'wait.html',
   },
   regex: {
     NAME: /^[a-zA-Z]{3,8}$/,
@@ -54,7 +55,7 @@ const values = {
   },
   socket: {
     RELOAD: 'RELOAD',
-    UPDATE_PLAYERS: 'UPDATE_PLAYERS'
+    UPDATE_PLAYERS: 'UPDATE_PLAYERS',
   },
   time: {
     IDEA: 60 *1000,

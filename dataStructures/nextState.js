@@ -33,7 +33,7 @@ function assignFollowChain(room) {
     player = players.getPlayer(sessionId);
     followPlayerIndex = (index+1) % room.players.length;
     followPlayerSessionId = room.players[followPlayerIndex];
-    player.setFollowing(followPlayerSessionId);
+    player.setFollowingTo(followPlayerSessionId);
   })
 }
 
@@ -45,8 +45,8 @@ function shufflePlayers(room) {
 }
 
 function moveAllPlayerDataToTargetPlayerChain(room) {
-  this.players.forEach(
-    this.moveAllPlayerDataToTargetPlayerChain(room)
+  room.players.forEach(
+    movePlayerDataTargetPlayerChain(room)
   );
 }
 
@@ -56,7 +56,7 @@ function movePlayerDataTargetPlayerChain(room) {
     let targetPlayerIndex = (index + room.round) % room.players.length;
     let targetPlayerSessionId = room.players[targetPlayerIndex];
     players.getPlayer(targetPlayerSessionId).putChainData(data);
-  }
+  };
 }
 
 function moveAllNewPlayerDataToPreviousData(room) {
@@ -70,7 +70,7 @@ function changeToReplayState(room) {
 }
 
 function changeToNextState(room) {
-  room.setState(values.next[this.state]);
+  room.setState(values.next[room.state]);
 }
 
 function sendSocketReloadMessage(room) {

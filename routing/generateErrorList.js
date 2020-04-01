@@ -1,10 +1,11 @@
 // needs to be defined here, as references local functions
 const errorToFunction = {
-  'NAME': nameIsInvalid,
-  'ROOM_ID': roomIdIsInvalid,
+  'INVALID_NAME': nameIsInvalid,
+  'INVALID_ROOM_ID': roomIdIsInvalid,
   'ROOM_STARTED': roomHasStarted,
   'NAME_TAKEN': nameIsTaken,
   'INVALID_SESSION_ID': sessionIdIsInvalid,
+  'PLAYER_CONNECTED': playerIsAlreadyConnected,
   'ROOM_NOT_STARTED': roomHasNotStarted,
   'PLAYER_READY': playerIsAlreadyReady,
   'ROOM_ENDED': roomHasEnded,
@@ -33,11 +34,11 @@ function addErrorName(errorName) {
 
 // tests
 function nameIsInvalid(data) {
-  return values.regex.NAME.test(data.name);
+  return !values.regex.NAME.test(data.name);
 }
 
 function roomIdIsInvalid(data) {
-  return values.regex.ROOM_ID.test(data.roomId);
+  return !values.regex.ROOM_ID.test(data.roomId);
 }
 
 function roomHasStarted(data) {
@@ -55,7 +56,13 @@ function nameIsTaken(data) {
 function sessionIdIsInvalid(data) {
   let sessionIdValid = values.regex.SESSION_ID.test(data.sessionId);
   let sessionIdExists = sessionIdValid && players.sessionIdExists(data.sessionId);
-  return sessionIdExists;
+  let sessionIdDoesntExist = !sessionIdExists;
+  return sessionIdDoesntExist;
+}
+
+function playerIsAlreadyConnected(data) {
+  let playerIsConnected = players.isPlayerConnected(data.sessionId);
+  return playerIsConnected;
 }
 
 function roomHasNotStarted(data) {
@@ -77,4 +84,4 @@ function timeLimitHasFinished(data) {
   return rooms.getRoom(data.roomId).timeLimitHasFinished();
 }
 
-module.exports = nameAndRoomIdErrorList;
+module.exports = generateErrorList;

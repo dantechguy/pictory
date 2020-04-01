@@ -11,6 +11,7 @@ const Players = require('./dataStructures/players');
 
 // setup global values
 global.values = values;
+global.l = console.log;
 
 // call setup functions
 var server = setupRoutingAndReturnServer();

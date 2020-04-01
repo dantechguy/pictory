@@ -90,25 +90,27 @@ class Room {
   }
 
   getDisconnectedPlayers() {
-    let disconnectedPlayers = this.players.filter((sessionId) => {
+    return this.players.filter((sessionId) => {
       return players.isPlayerDisconnected(sessionId);
     });
   }
 
   allPlayersConnected() { // no one is disconnected
-    return getDisconnectedPlayers().length === 0;
+    return this.getDisconnectedPlayers().length === 0;
   }
 
   allPlayersDisconnected() { // everyone is disconnected
-    return getDisconnectedPlayers().length === this.players.length;
+    return this.getDisconnectedPlayers().length === this.players.length;
   }
 
   allPlayersAreReadyAndConnected() {
-    this.players.forEach((sessionId) => {
+    for (let i=0; i<this.players.length; i++) {
+      let sessionId = this.players[i];
+      let player = players.getPlayer(sessionId);
       if (player.isNotReady() || player.isDisconnected()) {
         return false;
       }
-    });
+    }
     return true;
   }
 }

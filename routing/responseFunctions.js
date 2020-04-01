@@ -4,13 +4,13 @@ const generateErrorList = require('./generateErrorList');
 function createResponseJson(status, data) {
   let responseJson = {
     status: status,
-    data: data
+    data: data,
   }
   return responseJson;
 }
 
 // middleware to check for valid session id
-function checkSessionId(req, res) {
+function checkSessionId(req, res, next) {
   let data = {
     sessionId: req.cookies.sessionId,
   }
@@ -19,17 +19,25 @@ function checkSessionId(req, res) {
   let noErrors = errorList.length === 0;
   if (noErrors) {
     next();
+  } else if (req.path === values.url.GAME) { // if session id on game, return to index
+    gameRequestSessionIdError(errorList, res);
   } else {
     requestError(errorList, res);
   }
 }
 
+function gameRequestSessionIdError(errorList, res) {
+  res.cookie('sessionId', '');
+  res.status(401); // forbidden
+  res.redirect('/')
+}
+
 // generate data json
 function generateDataJson(req) {
   let data = {
-    sessionId: req.cookie.sessionId,
+    sessionId: req.cookies.sessionId,
     roomId: players.getRoomIdFromSessionId(req.cookies.sessionId),
-    data: req.body.data;
+    data: req.body.data,
   }
   return data;
 }
