@@ -103,11 +103,11 @@ class Room {
     return this.getDisconnectedPlayers().length === this.players.length;
   }
 
-  allPlayersAreReadyAndConnected() {
+  allPlayersAreReadyAndConnectedOrToExit() { // toExit players do not count towards 'connected' count
     for (let i=0; i<this.players.length; i++) {
       let sessionId = this.players[i];
       let player = players.getPlayer(sessionId);
-      if (player.isNotReady() || player.isDisconnected()) {
+      if (player.isNotReady() || (player.isDisconnected() && !player.isToExit()) ) {
         return false;
       }
     }

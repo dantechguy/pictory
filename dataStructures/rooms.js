@@ -30,7 +30,7 @@ class Rooms {
   }
 
   tryToMoveToNextState(roomId) {
-    if (this.allPlayersAreReadyAndConnected(roomId)) {
+    if (this.allPlayersAreReadyAndConnectedOrToExit(roomId)) {
       l('all players ready')
       this.moveToNextState(roomId);
     }
@@ -44,9 +44,9 @@ class Rooms {
     this.getRoom(roomId).nextState();
   }
 
-  allPlayersAreReadyAndConnected(roomId) {
+  allPlayersAreReadyAndConnectedOrToExit(roomId) {
     let room = this.getRoom(roomId);
-    return room.allPlayersAreReadyAndConnected();
+    return room.allPlayersAreReadyAndConnectedOrToExit();
   }
 
   deleteRoom(roomId) { // all players have disconnected

@@ -10,6 +10,7 @@ function playerConnected(socket) {
     let roomId = player.roomId;
     socket.join(roomId);
     l('join', player.t())
+    rooms.sendSocketPlayerStatusUpdate(roomId);
     rooms.tryToMoveToNextState(roomId);
   } // if not, then either: user somehow deleted cookie while on game page before socket script loaded
   // or player has just exited or been kicked, as page reloads session id has been removed from 'players'
@@ -23,7 +24,8 @@ function playerDisconnected(socket) {
     player.setDisconnected();
     let roomId = player.roomId;
     socket.leave(roomId); // still want to leave even if user session id doesnt exist // not sure if this works on /exit
-        l('left', player.t())
+    l('left', player.t())
+    rooms.sendSocketPlayerStatusUpdate(roomId);
     rooms.deleteRoomIfAllPlayersDisconnected(roomId);
   } // same as above, if session id invalid
 }
