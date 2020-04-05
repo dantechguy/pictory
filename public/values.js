@@ -64,6 +64,7 @@ const values = {
     PUT_DATA_INTERVAL: 10 *1000, // every n seconds their data is uploaded
     PUT_DATA_FINAL: 3 *1000, // time before finish which data is uploaded
     CONNECT: 30 *1000, // non connected players have n seconds to re-connect or be removed
+    RETRY: 5 *1000, // how often client retries for /time and /data on error
   }
 }
 
