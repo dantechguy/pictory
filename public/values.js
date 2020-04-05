@@ -68,7 +68,6 @@ const values = {
   }
 }
 
-
 try {
   module.exports = values;
 } catch (err) {
