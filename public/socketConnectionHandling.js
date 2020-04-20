@@ -8,6 +8,4 @@ var playerStatusJson = {};
 
 // socket.on('connection', function(data) {});
 
-socket.on(values.socket.UPDATE_PLAYERS, function(data) {
-  playerStatusJson = data;
-})
+socket.on(values.socket.UPDATE_PLAYERS, handlePlayerUpdate)

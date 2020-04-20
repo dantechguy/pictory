@@ -12,7 +12,7 @@ function setTimeoutToEnforceNextState(room) {
 
 function notAllPlayersAreReadyOrConnectedByTimeLimit(room) {
   room.setAllPlayersReady();
-  if (room.allPlayersConnected()) { // all players are ready and connected
+  if (room.allPlayersConnectedOrToExit()) { // all players are ready and connected
     room.nextState();
   } else { // at least one player not connected
     setTimeoutToEnforceConnection(room)

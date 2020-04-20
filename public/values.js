@@ -6,7 +6,7 @@ const values = {
     READY: '/done',
     DATA: '/data',
     TIME: '/time',
-    EXIT: '/exit'
+    EXIT: '/exit',
   },
   cookie: {
     SESSION_ID_KEY: 'sessionId',
@@ -28,7 +28,8 @@ const values = {
     IDEA: 'IDEA',
     DRAW: 'DRAW',
     GUESS: 'GUESS',
-    REPLAY: 'REPLAY'
+    REPLAY: 'REPLAY',
+    WAIT: 'WAIT',
   },
   file: {
     PUBLIC: './../public/',
@@ -39,6 +40,10 @@ const values = {
     GUESS: 'guess.html',
     REPLAY: 'replay.html',
     WAIT: 'wait.html',
+    READY_ICON: '/public/ready.svg',
+    NOT_READY_ICON: '/public/notReady.svg',
+    CONNECTED_ICON: '/public/connected.svg',
+    NOT_CONNECTED_ICON: '/public/notConnected.svg',
   },
   regex: {
     NAME: /^[a-zA-Z]{3,8}$/,
@@ -65,6 +70,133 @@ const values = {
     PUT_DATA_FINAL: 3 *1000, // time before finish which data is uploaded
     CONNECT: 30 *1000, // non connected players have n seconds to re-connect or be removed
     RETRY: 5 *1000, // how often client retries for /time and /data on error
+    TIMER: 0.1 *1000, // how precise the timer is
+    TIMER_DP: 1 // how many decimal places the timer is to
+  },
+  dom: {
+    CONTAINER_ID_PREFIX: 'container-',
+    name: {
+      ELEMENT: 'input',
+      attributes: {
+        id: 'name',
+        type: 'text',
+        placeholder: 'name',
+      }
+    },
+    roomId: {
+      ELEMENT: 'input',
+      attributes: {
+        id: 'roomid',
+        type:'text',
+        placeholder: 'room id',
+      }
+    },
+    submit: {
+      ELEMENT: 'button',
+      attributes: {
+        id: 'submit',
+        type: 'button',
+        textContent: 'submit',
+        onclick: 'submit()',
+      }
+    },
+    reJoin: {
+      ELEMENT: 'button',
+      attributes: {
+        id: 'rejoin',
+        type: 'button',
+        textContent: 're-join game',
+        onclick: 'reJoin()',
+      }
+    },
+    playerList: {
+      ELEMENT: 'ul',
+      attributes: {
+        id: 'playerlist',
+      }
+    },
+    exit: {
+      ELEMENT: 'button',
+      attributes: {
+        id: 'exit',
+        type: 'button',
+        textContent: 'leave',
+        onclick: 'setToExit()',
+      }
+    },
+    timer: {
+      ELEMENT: 'div',
+      attributes: {
+        id: 'timer',
+      }
+    },
+    inputTextPrompt: {
+      ELEMENT: 'input',
+      attributes: {
+        id: 'inputtextprompt'
+      }
+    },
+    showTextPrompt: {
+      ELEMENT: 'div',
+      attributes: {
+        id: 'showtextprompt',
+      }
+    },
+    inputCanvasPrompt: {
+      ELEMENT: 'canvas',
+      attributes: {
+        id: 'inputcanvasprompt',
+        width: 400,
+        height: 500,
+        ontouchstart: 'touchStart()',
+        ontouchend: 'touchEnd()',
+        ontouchcancel: 'touchEnd()',
+        ontouchmove: 'touchMove()',
+      }
+    },
+    showCanvasPrompt: {
+      ELEMENT: 'canvas',
+      attributes: {
+        id: 'showcanvasprompt',
+        width: 400,
+        height: 500,
+      }
+    },
+    clearDrawing: {
+      ELEMENT: 'button',
+      attributes: {
+        id: 'cleardrawing',
+        type: 'button',
+        onclick: 'clearDrawing()',
+      }
+    },
+    penColour: {
+      ELEMENT: 'button',
+      attributes: {
+        id: 'pencolour',
+        type: 'button',
+        onclick: 'penColour()',
+      }
+    },
+    penSize: {
+      ELEMENT: 'button',
+      attributes: {
+        id: 'pensize',
+        type: 'button',
+        onclick: 'penSize()',
+      }
+    },
+  },
+  drawing: {
+    big: {
+      true: 10,
+      false: 5,
+    },
+    dark: {
+      true: '#000',
+      false: '888',
+    },
+    delay: 0.1 *1000, // delay between drawing frames
   }
 }
 

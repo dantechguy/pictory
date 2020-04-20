@@ -26,7 +26,7 @@ function playerDisconnected(socket) {
     socket.leave(roomId); // still want to leave even if user session id doesnt exist // not sure if this works on /exit
     l('left', player.t())
     rooms.sendSocketPlayerStatusUpdate(roomId);
-    rooms.deleteRoomIfAllPlayersDisconnected(roomId);
+    rooms.deleteRoomIfAllPlayersDisconnectedOrToExit(roomId);
   } // same as above, if session id invalid
 }
 

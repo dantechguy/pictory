@@ -25,13 +25,7 @@ var roomIdInputDom = document.querySelector('#id');
 var reJoinInputDom = document.querySelector('#rejoin');
 
 // re-join code
-function reJoinRoom() {
-  goToUrl(values.url.GAME);
-}
 
-if (getCookie(values.cookie.SESSION_ID_KEY) == '') {
-  reJoinInputDom.style.display = 'none';
-}
 
 // submit button call
 function checkNameAndRoomId() {

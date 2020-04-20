@@ -89,18 +89,18 @@ class Room {
     return this.players;
   }
 
-  getDisconnectedPlayers() {
+  getDisconnectedPlayersWhoAreNotToExit() {
     return this.players.filter((sessionId) => {
-      return players.isPlayerDisconnected(sessionId);
+      return players.isPlayerDisconnected(sessionId) && !players.isPlayerToExit(sessionId);
     });
   }
 
-  allPlayersConnected() { // no one is disconnected
-    return this.getDisconnectedPlayers().length === 0;
+  allPlayersConnectedOrToExit() { // no one is disconnected who wants to continue
+    return this.getDisconnectedPlayersWhoAreNotToExit().length === 0;
   }
 
-  allPlayersDisconnected() { // everyone is disconnected
-    return this.getDisconnectedPlayers().length === this.players.length;
+  allPlayersDisconnectedOrToExit() { // everyone is disconnected
+    return this.getDisconnectedPlayersWhoAreNotToExit().length === this.players.length;
   }
 
   allPlayersAreReadyAndConnectedOrToExit() { // toExit players do not count towards 'connected' count
@@ -113,6 +113,7 @@ class Room {
     }
     return true;
   }
+
 }
 
 

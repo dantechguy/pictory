@@ -13,15 +13,15 @@ class Rooms {
     return this.rooms[roomId];
   }
 
-  deleteRoomIfAllPlayersDisconnected(roomId) {
-    if (this.allPlayersDisconnected(roomId)) {
+  deleteRoomIfAllPlayersDisconnectedOrToExit(roomId) {
+    if (this.allPlayersDisconnectedOrToExit(roomId)) {
       l('deleting room', roomId)
       this.deleteRoom(roomId);
     }
   }
 
-  allPlayersDisconnected(roomId) {
-    return this.getRoom(roomId).allPlayersDisconnected();
+  allPlayersDisconnectedOrToExit(roomId) {
+    return this.getRoom(roomId).allPlayersDisconnectedOrToExit();
   }
 
   addPlayerToRoom(data) {
