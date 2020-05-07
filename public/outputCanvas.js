@@ -30,10 +30,11 @@ function showDrawing(drawingData, instant, customElementId) {
 
 function drawStroke(stroke, context, size, delay) {
   let points = stroke.points;
+  let type = stroke.type;
 
   // set thickness and colour
-  context.lineWidth = values.drawing.big[stroke.type.big];
-  context.strokeStyle = values.drawing.dark[stroke.type.dark];
+  context.lineWidth = values.drawing.big[type.big];
+  context.strokeStyle = values.drawing.dark[type.dark];
 
   // initial point, for dots
   context.beginPath();
@@ -44,7 +45,7 @@ function drawStroke(stroke, context, size, delay) {
   if (delay === 0) {
     instantStroke(points, context, size);
   } else {
-    delayStroke(points, context, size, delay);
+    delayStroke(points, context, size, delay, type);
   }
 }
 
@@ -58,7 +59,9 @@ function instantStroke(points, context, size) {
   context.stroke();
 }
 
-function delayStroke(points, context, size, delay) {
+function delayStroke(points, context, size, delay, type) {
+  context.lineWidth = values.drawing.big[type.big];
+  context.strokeStyle = values.drawing.dark[type.dark];
   for (let i=1, n=points.length; i<n; i++) {
     let previousPoint = points[i-1];
     let point = points[i];
