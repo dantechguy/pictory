@@ -4,13 +4,11 @@
   <title>pictory</title>
   <link rel='stylesheet' type='text/css' href='style.css'>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js' integrity='sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=' crossorigin='anonymous'></script>
 </head>
 <body>
-  <div id='container-name'></div>
-  <div id='container-roomid'></div>
-  <div id='container-submit'></div>
-  <div id='container-rejoin'></div>
 
+  <div id='container-replay'></div>
 
   <script charset='utf-8' src='setGlobalVariables.js'></script>
   <script charset='utf-8' src='values.js'></script>
@@ -20,22 +18,22 @@
   <script charset='utf-8' src='goToUrl.js'></script>
   <script charset='utf-8' src='createElement.js'></script>
 
-  <script charset='utf-8' src='submit.js'></script>
-  <script charset='utf-8' src='updateInputData.js'></script>
-  <script charset='utf-8' src='nameAndRoomIdValidation.js'></script>
-  <script charset='utf-8' src='reJoin.js'></script>
-  <script charset='utf-8' src='submitDataIsEmpty.js'></script>
+  <script charset='utf-8' src='outputCanvas.js'></script>
+  <script charset='utf-8' src='getRoundData.js'></script>
+  <script charset='utf-8' src='generateReplay.js'></script>
+  <script charset='utf-8' src='handlePlayerUpdate.js'></script>
+  <script charset='utf-8' src='socketConnectionHandling.js'></script>
+
 
   <script type='text/javascript'>
 
-state = values.state.INDEX;
+state = values.state.REPLAY;
 
-createElement('name');
-createElement('roomId');
-createElement('submit');
-createElement('reJoin');
 
+
+getRoundData();
 
   </script>
 </body>
+
 </html>

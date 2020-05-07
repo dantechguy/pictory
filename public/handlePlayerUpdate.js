@@ -7,14 +7,14 @@ function handlePlayerUpdate(data) {
 
 function updatePlayerList() {
   let ulId = values.dom.playerList.attributes.id;
-  let ul = document.getElementById(playerListId);
+  let ul = document.getElementById(ulId);
   // remove all li's
   while (ul.firstChild) {
     ul.removeChild(ul.lastChild);
   };
-  let playerNames = Object.keys(playerStatuses);
+  let playersNames = Object.keys(playerStatuses);
   for (let i=0; i<playersNames.length; i++) {
-    let playerName = playerNames[i];
+    let playerName = playersNames[i];
     li = createLi(playerName);
     ul.appendChild(li);
   }

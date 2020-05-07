@@ -3,14 +3,19 @@
 <head>
   <title>pictory</title>
   <link rel='stylesheet' type='text/css' href='style.css'>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
   <script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js' integrity='sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=' crossorigin='anonymous'></script>
 </head>
 <body>
 
-  <div id='container-playerlist'></div>
+  <div id='container-timer'></div>
+  <div id='container-showtextprompt'></div>
+  <div id='container-inputcanvasprompt'></div>
+  <div id='container-cleardrawing'></div>
+  <div id='container-undostroke'></div>
+  <div id='container-pensize'></div>
+  <div id='container-pencolour'></div>
   <div id='container-submit'></div>
-  <div id='container-exit'></div>
 
   <script charset='utf-8' src='setGlobalVariables.js'></script>
   <script charset='utf-8' src='values.js'></script>
@@ -24,17 +29,28 @@
   <script charset='utf-8' src='updateInputData.js'></script>
   <script charset='utf-8' src='handlePlayerUpdate.js'></script>
   <script charset='utf-8' src='socketConnectionHandling.js'></script>
-  <script charset='utf-8' src='setToExit.js'></script>
+  <script charset='utf-8' src='updateTimer.js'></script>
+  <script charset='utf-8' src='inputCanvas.js'></script>
+  <script charset='utf-8' src='outputCanvas.js'></script>
+  <script charset='utf-8' src='getRoundData.js'></script>
+  <script charset='utf-8' src='showText.js'></script>
   <script charset='utf-8' src='submitDataIsEmpty.js'></script>
 
   <script type='text/javascript'>
 
-state = values.state.LOBBY;
+state = values.state.DRAW;
 
-createElement('playerList');
+createElement('timer');
+createElement('showTextPrompt');
+createElement('inputCanvasPrompt');
+createElement('clearDrawing');
+createElement('undoStroke');
+createElement('penSize');
+createElement('penColour');
 createElement('submit');
-createElement('exit');
 
+getRoundData();
+setupCanvas();
 
   </script>
 </body>

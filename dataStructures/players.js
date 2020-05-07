@@ -11,7 +11,7 @@ class Players {
   }
 
   // standard methods
-  getPlayer(sessionId) {
+  player(sessionId) {
     return this.players[sessionId];
   }
 
@@ -24,76 +24,12 @@ class Players {
     delete this.players[sessionId];
   }
 
-  // data access methods
-  getPlayerChainData(sessionId) {
-    return this.getPlayer(sessionId).getChainData();
-  }
-
-  getPlayerData(sessionId) {
-    return this.getPlayer(sessionId).getData();
-  }
-
-  moveNewDataToPreviousData(sessionId) {
-    this.getPlayer(sessionId).moveNewDataToPreviousData();
-  }
-
-  // following player access methods
-  getFollowingPlayerData(sessionId) {
-    return this.getPlayerData(this.getFollowingPlayerSessionId(sessionId));
-  }
-
-  getFollowingPlayerSessionId(sessionId) {
-    return this.getPlayer(sessionId).getFollowing();
-  }
-
-  // room id from player
-  getRoomIdFromSessionId(sessionId) {
-    let player = this.getPlayer(sessionId);
-    return player.roomId;
-  }
-
-  // player ready and connection access methods
-  isPlayerReady(sessionId) {
-    let player = this.getPlayer(sessionId);
-    return player.ready;
-  }
-
-  setPlayerReady(sessionId) {
-    this.getPlayer(sessionId).setReady();
-  }
-
-  setPlayerNotReady(sessionId) {
-    this.getPlayer(sessionId).setNotReady();
-  }
-
-  isPlayerConnected(sessionId) {
-    let player = this.getPlayer(sessionId);
-    return player.connected;
-  }
-
-  isPlayerDisconnected(sessionId) {
-    return !this.isPlayerConnected(sessionId);
-  }
-
-  getPlayerName(sessionId) {
-    return this.getPlayer(sessionId).getName();
-  }
-
-  // exit methods
-  setPlayerToExit(sessionId) {
-    this.getPlayer(sessionId).setToExit();
-  }
-
-  isPlayerToExit(sessionId) {
-    this.getPlayer(sessionId).isToExit();
-  }
-
   // session id generation
   createPlayerReturnSessionId(data) {
     let sessionId = this.createNewUniqueSessionId();
     data.sessionId = sessionId;
     this.createPlayer(data);
-    rooms.addPlayerToRoom(data);
+    rooms.room(data.roomId).addPlayerWithSessionId(data.sessionId);
     return sessionId;
   }
 

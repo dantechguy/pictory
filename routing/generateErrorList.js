@@ -8,6 +8,7 @@ const errorToFunction = {
   'PLAYER_CONNECTED': playerIsAlreadyConnected,
   'ROOM_NOT_STARTED': roomHasNotStarted,
   'PLAYER_READY': playerIsAlreadyReady,
+  'PLAYER_NOT_READY': playerIsNotReady,
   'ROOM_ENDED': roomHasEnded,
   'TIME_LIMIT': timeLimitHasFinished,
 }
@@ -43,13 +44,15 @@ function roomIdIsInvalid(data) {
 
 function roomHasStarted(data) {
   let roomExists = rooms.roomExists(data.roomId);
-  let roomStarted = roomExists && rooms.getRoomState(data.roomId) !== values.state.LOBBY;
+  let roomStarted = roomExists && rooms.room(data.roomId).getState() !== values.state.LOBBY;
   return roomStarted;
 }
 
 function nameIsTaken(data) {
   let roomExists = rooms.roomExists(data.roomId);
-  let nameTaken = roomExists && rooms.getRoom(data.roomId).hasPlayerName(data.name);
+  let nameTaken = roomExists && rooms.room(data.roomId).hasPlayerName(data.name);
+  if (roomExists) {
+  }
   return nameTaken;
 }
 
@@ -61,7 +64,7 @@ function sessionIdIsInvalid(data) {
 }
 
 function playerIsAlreadyConnected(data) {
-  let playerIsConnected = players.isPlayerConnected(data.sessionId);
+  let playerIsConnected = players.player(data.sessionId).isConnected;
   return playerIsConnected;
 }
 
@@ -70,18 +73,23 @@ function roomHasNotStarted(data) {
 }
 
 function playerIsAlreadyReady(data) {
-  let playerIsReady = players.isPlayerReady(data.sessionId);
+  let playerIsReady = players.player(data.sessionId).isReady();
   return playerIsReady;
+}
+
+function playerIsNotReady(data) {
+  let playerIsReady = players.player(data.sessionId).isReady();
+  return !playerIsReady;
 }
 
 function roomHasEnded(data) {
   let roomExists = rooms.roomExists(data.roomId);
-  let roomEnded = roomExists && rooms.getRoomState(data.roomId) !== values.state.REPLAY;
+  let roomEnded = roomExists && rooms.room(data.roomId).getState() === values.state.REPLAY;
   return roomEnded;
 }
 
 function timeLimitHasFinished(data) {
-  return rooms.getRoom(data.roomId).timeLimitHasFinished();
+  return rooms.room(data.roomId).timeLimitHasFinished();
 }
 
 module.exports = generateErrorList;

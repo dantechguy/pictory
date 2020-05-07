@@ -19,17 +19,28 @@ function handleDataPutRequest(req, res) {
 }
 
 function requestSuccess(data, res) {
-  if (roomHasEnded(data.roomId)) { // game has ended, send chain data
-    let playerData = players.getPlayerChainData(data.sessionId);
-  } else { // game is still going, send following player data
-    let playerData = players.getFollowingPlayerData(data.sessionId);
+  let playerData, timeLimit, responseJson;
+  let room = rooms.room(data.roomId);
+  let player = players.player(data.sessionId);
+  let roomState = room.getState();
+  if (roomState === values.state.REPLAY) { // game has ended, send chain data
+    playerData = player.getChainData();
+    responseJson = {status: 'success', data: playerData};
+  } else if (roomState === values.state.IDEA || player.isReady()) { // if making idea, no prompt to get
+    timeLimit = room.getTimeLimit();
+    responseJson = {status: 'success', data: {
+      time: timeLimit,
+    }};
+  } else { // game is still going, send following player data and time
+    let followingPlayerSessionId = player.getFollowingPlayerSessionId()
+    playerData = players.player(followingPlayerSessionId).getData();
+    timeLimit = room.getTimeLimit();
+    responseJson = {status: 'success', data: {
+      prompt: playerData,
+      time: timeLimit,
+    }};
   }
-  let responseJson = createResponseJson('success', playerData);
   res.json(responseJson);
-}
-
-function roomHasEnded(roomId) {
-  return rooms.getRoomState(roomId) === values.state.REPLAY;
 }
 
 module.exports = handleDataPutRequest;

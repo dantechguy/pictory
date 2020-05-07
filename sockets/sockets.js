@@ -4,7 +4,6 @@ var io;
 
 // required files
 const playerConnection = require('./playerConnections');
-const sendRoomMessageFunctionFunction = require('./sendRoomMessage');
 
 
 // functions
@@ -20,7 +19,7 @@ function setupSockets(server) {
     });
 
   });
-  return sendRoomMessageFunctionFunction(io);
+  return io;
 }
 
 

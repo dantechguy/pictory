@@ -1,23 +1,32 @@
-const stateTime = require('./stateTime');
+const forceTimeLimit = require('./forceTimeLimit');
 const removeExitPlayers = require('./removeExitPlayers');
 
-function nextState(roomId) {
-  let room = rooms.getRoom(roomId);
-  stateTime.cancelPreviousTimeouts(room);
+function tryToMoveToNextState(room) {
+  l(`  try to move to next state [${room.getRoomId()}]`)
+  if (room.allPlayersAreReadyAndConnectedOrToExit()) {
+    l(`  next state [${room.getRoomId()}]`)
+    nextState(room);
+  }
+}
+
+function nextState(room) {
+  forceTimeLimit.cancelPreviousForceNextStateTimeout(room);
   if (roomIsInLobbyState(room)) {
     assignFollowChain(room);
   }
   removeExitPlayers(room);
-  moveAllPlayerDataToTargetPlayerChain(room);
   moveAllNewPlayerDataToPreviousData(room);
+  if (room.getState() !== values.state.LOBBY) {
+    moveAllPlayerDataToTargetPlayerChain(room);
+  }
   room.setAllPlayersNotReady();
   if (room.gameOver()) {
     changeToReplayState(room);
   } else {
     changeToNextState(room);
-    round++;
-    stateTime.setTimeLimit(room);
-    stateTime.setTimeoutToEnforceNextState(room);
+    room.round++;
+    room.setTimeLimit();
+    forceTimeLimit.setTimeoutToEnforceNextState(room);
   }
   sendSocketReloadMessage(room);
 }
@@ -30,7 +39,7 @@ function assignFollowChain(room) {
   let player, followPlayerIndex, followPlayerSessionId;
   shufflePlayers(room);
   room.players.forEach((sessionId, index) => {
-    player = players.getPlayer(sessionId);
+    player = players.player(sessionId);
     followPlayerIndex = (index+1) % room.players.length;
     followPlayerSessionId = room.players[followPlayerIndex];
     player.setFollowingTo(followPlayerSessionId);
@@ -52,16 +61,17 @@ function moveAllPlayerDataToTargetPlayerChain(room) {
 
 function movePlayerDataTargetPlayerChain(room) {
   return (sessionId, index) => {
-    let data = players.getPlayerData(sessionId);
-    let targetPlayerIndex = (index + room.round) % room.players.length;
+    let player = players.player(sessionId);
+    let data = {name: player.getName(), prompt: player.getData()};
+    let targetPlayerIndex = (index + room.round - 1) % room.players.length;
     let targetPlayerSessionId = room.players[targetPlayerIndex];
-    players.getPlayer(targetPlayerSessionId).putChainData(data);
+    players.player(targetPlayerSessionId).putChainData(data);
   };
 }
 
 function moveAllNewPlayerDataToPreviousData(room) {
   room.players.forEach((sessionId) => {
-    players.moveNewDataToPreviousData(sessionId);
+    players.player(sessionId).moveNewDataToPreviousData();
   });
 }
 
@@ -74,7 +84,7 @@ function changeToNextState(room) {
 }
 
 function sendSocketReloadMessage(room) {
-  room.sendRoomMessage(values.socket.RELOAD);
+  room.sendSocketMessage(values.socket.RELOAD);
 }
 
-module.exports = nextState;
+module.exports = tryToMoveToNextState;

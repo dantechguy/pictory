@@ -1,4 +1,6 @@
 var state;
 var playerStatuses;
-var data;
+var promptData;
+var submitData;
 var timeLimit;
+var canvasData;

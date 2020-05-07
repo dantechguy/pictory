@@ -9,3 +9,4 @@ var playerStatusJson = {};
 // socket.on('connection', function(data) {});
 
 socket.on(values.socket.UPDATE_PLAYERS, handlePlayerUpdate)
+socket.on(values.socket.RELOAD, () => {goToUrl(values.url.GAME)});

@@ -1,19 +1,36 @@
-const nextState = require('./nextState');
+const tryToMoveToNextState = require('./nextState');
+const deleteRoom = require('./deleteRoom');
 
 // classes
 class Room {
-  constructor(roomId, sendRoomMessageFunction) {
+  constructor(roomId) {
     this.roomId = roomId;
     this.players = [];
     this.state = values.state.LOBBY;
     this.round = 0;
     this.time; // unix timestamp to end of round
-    // function passed from socket server init
-    this.sendRoomMessage = sendRoomMessageFunction(this.roomId);
     // function for handling changing next state
-    this.nextState = nextState;
-    // variable for cancelling and setting timeouts for forcing nextState
-    this.timeOut;
+    this.tryToMoveToNextState = () => tryToMoveToNextState(this);
+    // function for trying to delete room if all players diconnected
+    this.deleteRoomIfAllPlayersDisconnectedOrToExitAfterTimeout = () => deleteRoom.deleteRoomIfAllPlayersDisconnectedOrToExitAfterTimeout(this);
+    this.cancelPreviousDeleteRoomTimeout = () => deleteRoom.cancelPreviousDeleteRoomTimeout(this);
+    // variable for following up checks after time
+    this.timeouts = {
+      forceStateChange: undefined, // kick players who haven't re-connected
+      deleteRoom: undefined, // delete room if all players have left
+    };
+  }
+
+  t() {
+    return this.players.reduce((acc, sessionId) => {
+      return acc + '  ' + players.player(sessionId).t() + '\n';
+    }, '').slice(0, -1);
+
+  }
+
+  // time
+  setTimeLimit() {
+    this.time = new Date().getTime() + values.time[this.state];
   }
 
   // if game is finished method
@@ -30,34 +47,48 @@ class Room {
   }
 
   // send player ready update
-  sendSocketPlayerStatusUpdate() {
-    let playerStatusJson = this.generatePlayerStatusJson();
-    this.sendRoomMessage(values.socket.UPDATE_PLAYERS, playerStatusJson);
+  sendSocketMessage(event, data) {
+    io.in(this.roomId).emit(event, data)
   }
 
-  generatePlayerStatusJson() {
+  sendSocketPlayerStatusUpdate() {
+    let playerStatusJson = this.generatePlayersStatusJson();
+    this.sendSocketMessage(values.socket.UPDATE_PLAYERS, playerStatusJson);
+  }
+
+  generatePlayersStatusJson() {
     let statusJson = {};
     this.players.forEach((sessionId) => {
+      let player = players.player(sessionId);
       let playerJson = {
-        ready: players.isPlayerReady(sessionId),
-        connected: players.isPlayerConnected(sessionId),
+        ready: player.isReady(),
+        connected: player.isConnected(),
       };
-      statusJson[players.getPlayerName(sessionId)] = playerJson;
+      statusJson[player.getName()] = playerJson;
     });
-
+    return statusJson;
   }
 
   // getters n helpers
-  setAllPlayersNotReady(room) {
-    room.players.forEach((sessionId) => {
-      players.setPlayerNotReady(sessionId);
+  getRoomId() {
+    return this.roomId;
+  }
+
+  setAllPlayersNotReady() {
+    this.players.forEach((sessionId) => {
+      players.player(sessionId).setNotReady();
     })
   }
 
-  setAllPlayersReady(room) {
-    room.players.forEach((sessionId) => {
-      players.setPlayerReady(sessionId);
-    })
+  setAllPlayersReadyandFillEmptyData() {
+    this.players.forEach((sessionId) => {
+      let player = players.player(sessionId);
+      if (!player.isReady()) {
+        let defaultData = this.getState() === values.state.DRAW ? values.defaultData.draw : values.defaultData.text;
+        player.putData(defaultData);
+      };
+      player.setReadyAndRefresh();
+    });
   }
 
   addPlayerWithSessionId(sessionId) {
@@ -65,14 +96,24 @@ class Room {
   }
 
   hasPlayerName(name) {
-    return this.players.includes(name);
+    for (let i=0; i<this.players.length; i++) {
+      let player = players.player(this.players[i]);
+      if (name === player.getName()) {
+        return true;
+      };
+    };
+    return false;
   }
 
   getState() {
     return this.state;
   }
 
-  deleteAllPlayers() { // fix so also removes from room, uses function
+  getTimeLimit() {
+    return this.time;
+  }
+
+  deleteAllPlayers() {
     this.players.forEach((sessionId) => {
       players.deletePlayer(sessionId);
       this.removePlayer(sessionId);
@@ -91,7 +132,8 @@ class Room {
 
   getDisconnectedPlayersWhoAreNotToExit() {
     return this.players.filter((sessionId) => {
-      return players.isPlayerDisconnected(sessionId) && !players.isPlayerToExit(sessionId);
+      let player = players.player(sessionId);
+      return !player.isConnected() && !player.isToExit();
     });
   }
 
@@ -99,15 +141,22 @@ class Room {
     return this.getDisconnectedPlayersWhoAreNotToExit().length === 0;
   }
 
+  getDisconnectedOrToExitPlayers() {
+    return this.players.filter((sessionId) => {
+      let player = players.player(sessionId);
+      return !player.isConnected() || player.isToExit();
+    });
+  }
+
   allPlayersDisconnectedOrToExit() { // everyone is disconnected
-    return this.getDisconnectedPlayersWhoAreNotToExit().length === this.players.length;
+    return this.getDisconnectedOrToExitPlayers().length === this.players.length;
   }
 
   allPlayersAreReadyAndConnectedOrToExit() { // toExit players do not count towards 'connected' count
     for (let i=0; i<this.players.length; i++) {
       let sessionId = this.players[i];
-      let player = players.getPlayer(sessionId);
-      if (player.isNotReady() || (player.isDisconnected() && !player.isToExit()) ) {
+      let player = players.player(sessionId);
+      if (!player.isReady() || (!player.isConnected() && !player.isToExit()) ) {
         return false;
       }
     }

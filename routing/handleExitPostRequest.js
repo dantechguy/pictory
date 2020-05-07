@@ -1,12 +1,13 @@
 const responseFunctions = require('./responseFunctions');
 const createResponseJson = responseFunctions.responseJson;
 const requestError = responseFunctions.errorList;
+const generateDataJson = responseFunctions.dataJson;
 const generateErrorList = require('./generateErrorList');
 
 
 function handleJoinPostRequest(req, res) {
-  let data = req.body;
-  let errorsToCheck = ['INVALID_SESSION_ID', 'ROOM_ENDED'];
+  let data = generateDataJson(req);
+  let errorsToCheck = ['ROOM_ENDED'];
   let errorList = generateErrorList(errorsToCheck, data);
   let noErrors = errorList.length === 0;
 
@@ -18,11 +19,14 @@ function handleJoinPostRequest(req, res) {
 }
 
 function requestSuccess(data, res) {
-  let player = players.getPlayer(data.sessionId);
+  let player = players.player(data.sessionId);
+  player.setReady();
   player.setToExit();
-  responseJson = createResponseJson('success', '');
+  l(player.t(), 'to exit')
+  responseJson = {status: 'success'};
   res.cookie(values.cookie.SESSION_ID_KEY, sessionId, {httpOnly: true}); // , secure: true
   res.json(responseJson);
+  rooms.room(data.roomId).deleteRoomIfAllPlayersDisconnectedOrToExitAfterTimeout();
 }
 
 module.exports = handleJoinPostRequest;

@@ -15,11 +15,11 @@ global.l = console.log;
 
 // call setup functions
 var server = setupRoutingAndReturnServer();
-sendRoomMessageFunction = setupSockets(server); // function to send socket messages
+global.io = setupSockets(server); // function to send socket messages
 
 
 // setup data structures
-global.rooms = new Rooms(sendRoomMessageFunction);
+global.rooms = new Rooms();
 global.players = new Players();
 
 

@@ -1,6 +1,6 @@
 function removeExitPlayers(room) {
   room.getPlayers().forEach((sessionId, index) => {
-    if (players.isPlayerToExit(sessionId)) {
+    if (players.player(sessionId).isToExit()) {
       safeRemovePlayer(room, sessionId, index)
     }
   });
@@ -16,9 +16,9 @@ function removePlayerFromFollowingChain(room, sessionId, index) {
   // this player is following the player who is about to leave
   let previousPlayerIndex = mod(index-1, room.getPlayers().length);
   let previousPlayerSessionId = room.getPlayers()[previousPlayerIndex];
-  let previousPlayer = players.getPlayer(previousPlayerSessionId);
-  let toExitPlayer = players.getPlayer(sessionId);
-  let nextPlayerSessionId = toExitPlayer.getFollowing();
+  let previousPlayer = players.player(previousPlayerSessionId);
+  let toExitPlayer = players.player(sessionId);
+  let nextPlayerSessionId = toExitPlayer.getFollowingPlayerSessionId();
   // this branches the gap between the two players around the exit player
   previousPlayer.setFollowingTo(nextPlayerSessionId);
 }

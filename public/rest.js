@@ -14,30 +14,51 @@ function putData(url, data) {
 function request(type, url, data) {
   let promise = new Promise((resolve, reject) => {
     fetchRequest(type, url, data)
-    .then(handleFetchThen(resolve, reject))
-    .catch((networkError) => { // fetch only fails on network errors
-      reject(networkError);
+    .then(response => {
+      let contentTypeHeader = response.headers.get('content-type');
+      let responseIsJson = contentTypeHeader && contentTypeHeader.indexOf('application/json') !== -1;
+
+      if (responseIsJson) {
+        response.json().then(responseJson => {
+          if (responseJson.status === 'success') {
+            resolve(responseJson);
+          } else if (responseJson.status === 'error') {
+            reject(responseJson.data);
+          };
+        });
+      } else {
+        reject(response.statusText);
+      }
+
+    //   if (response.ok) {
+    //     console.log('ok');
+    //     return response.json();
+    //   } else {
+    //     console.log('not ok');
+    //     reject(response.statusText); // not 200
+    //   }
+    })
+    .catch(networkError => { // fetch only fails on network errors
+      reject(networkError); // network error
     });
   });
   return promise;
 }
 
-function handleFetchThen(resolve, reject) {
-  return (response) => {
-    let statusIsOk = response.ok;
-    response.json().then(responseJson => { // responseJson is another promise
-      if (responseIsSuccessful(statusIsOk, responseJson)) {
-        resolve(responseJson.data)
-      } else {
-        reject(responseJson.data)
-      }
-    });
-  };
-}
-
-function responseIsSuccessful(statusIsOk, responseJson) {
-  return statusIsOk && responseJson.status === 'success';
-}
+// function handleFetchThen(resolve, reject) {
+//   return (response) => {
+//     response.json().then(responseJson => { // responseJson is another promise
+//       console.log(responseJson);
+//       if (response.ok && responseJson.status === 'success') {
+//         console.log('success', response.ok, responseJson);
+//         resolve(responseJson)
+//       } else {
+//         console.log('error: reject');
+//         reject(responseJson)
+//       }
+//     });
+//   };
+// }
 
 function fetchRequest(type, url, data) {
   const init = {

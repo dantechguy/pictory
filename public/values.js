@@ -20,16 +20,19 @@ const values = {
     PLAYER_CONNECTED: 'You have already joined this game.',
     ROOM_NOT_STARTED: 'The game has not started yet.',
     PLAYER_READY: 'You are already ready.',
+    PLAYER_NOT_READY: 'You are not ready.',
     ROOM_ENDED: 'The game has already ended.',
     TIME_LIMIT: 'The game has exceeded the time limit',
+    EMPTY_SUBMIT: 'Your prompt is empty, continue to submit?',
   },
   state: {
+    INDEX: 'INDEX', // pseudo state
     LOBBY: 'LOBBY',
     IDEA: 'IDEA',
     DRAW: 'DRAW',
     GUESS: 'GUESS',
     REPLAY: 'REPLAY',
-    WAIT: 'WAIT',
+    WAIT: 'WAIT', // pseudo state
   },
   file: {
     PUBLIC: './../public/',
@@ -40,10 +43,10 @@ const values = {
     GUESS: 'guess.html',
     REPLAY: 'replay.html',
     WAIT: 'wait.html',
-    READY_ICON: '/public/ready.svg',
-    NOT_READY_ICON: '/public/notReady.svg',
-    CONNECTED_ICON: '/public/connected.svg',
-    NOT_CONNECTED_ICON: '/public/notConnected.svg',
+    READY_ICON: 'ready.svg',
+    NOT_READY_ICON: 'notReady.svg',
+    CONNECTED_ICON: 'connected.svg',
+    NOT_CONNECTED_ICON: 'notConnected.svg',
   },
   regex: {
     NAME: /^[a-zA-Z]{3,8}$/,
@@ -65,13 +68,13 @@ const values = {
   time: {
     IDEA: 60 *1000,
     DRAW: 120 *1000,
-    GUESS: 30 *1000,
-    PUT_DATA_INTERVAL: 10 *1000, // every n seconds their data is uploaded
+    GUESS: 60 *1000,
     PUT_DATA_FINAL: 3 *1000, // time before finish which data is uploaded
-    CONNECT: 30 *1000, // non connected players have n seconds to re-connect or be removed
+    CONNECT: 30 *1000, // non connected players have n seconds to re-connect or be removed after timer
     RETRY: 5 *1000, // how often client retries for /time and /data on error
-    TIMER: 0.1 *1000, // how precise the timer is
-    TIMER_DP: 1 // how many decimal places the timer is to
+    TIMER: 0.1 *1000, // how often the timer updates
+    TIMER_DP: 1, // how many decimal places the timer is to
+    ROOM_DELETE: 60 * 1000, // how long after everyone has left that the room is deleted
   },
   dom: {
     CONTAINER_ID_PREFIX: 'container-',
@@ -80,6 +83,7 @@ const values = {
       attributes: {
         id: 'name',
         type: 'text',
+        maxLength: 8,
         placeholder: 'name',
       }
     },
@@ -88,7 +92,19 @@ const values = {
       attributes: {
         id: 'roomid',
         type:'text',
+        maxLength: 4,
         placeholder: 'room id',
+      }
+    },
+    join: {
+      ELEMENT: 'button',
+      attributes: {
+        id: 'join',
+        type: 'button',
+        textContent: 'join',
+      },
+      functions: {
+        onclick: 'trySendJoinPostRequest',
       }
     },
     submit: {
@@ -96,8 +112,10 @@ const values = {
       attributes: {
         id: 'submit',
         type: 'button',
-        textContent: 'submit',
-        onclick: 'submit()',
+        textContent: 'ready',
+      },
+      functions: {
+        onclick: 'submit',
       }
     },
     reJoin: {
@@ -105,8 +123,10 @@ const values = {
       attributes: {
         id: 'rejoin',
         type: 'button',
-        textContent: 're-join game',
-        onclick: 'reJoin()',
+        textContent: 'rejoin game',
+      },
+      functions: {
+        onclick: 'reJoin',
       }
     },
     playerList: {
@@ -121,7 +141,9 @@ const values = {
         id: 'exit',
         type: 'button',
         textContent: 'leave',
-        onclick: 'setToExit()',
+      },
+      functions: {
+        onclick: 'setToExit',
       }
     },
     timer: {
@@ -148,10 +170,16 @@ const values = {
         id: 'inputcanvasprompt',
         width: 400,
         height: 500,
-        ontouchstart: 'touchStart()',
-        ontouchend: 'touchEnd()',
-        ontouchcancel: 'touchEnd()',
-        ontouchmove: 'touchMove()',
+      },
+      functions: {
+        ontouchstart: 'touchStart',
+        onmousedown: 'touchStart',
+        onmouseup: 'touchEnd',
+        ontouchend: 'touchEnd',
+        ontouchcancel: 'touchEnd',
+        onmouseleave: 'touchEnd',
+        onmousemove: 'touchMove',
+        ontouchmove: 'touchMove',
       }
     },
     showCanvasPrompt: {
@@ -167,7 +195,21 @@ const values = {
       attributes: {
         id: 'cleardrawing',
         type: 'button',
-        onclick: 'clearDrawing()',
+        textContent: 'clear',
+      },
+      functions: {
+        onclick: 'clearDrawing',
+      }
+    },
+    undoStroke: {
+      ELEMENT: 'button',
+      attributes: {
+        id: 'undostroke',
+        type: 'button',
+        textContent: 'undo',
+      },
+      functions: {
+        onclick: 'undoStroke',
       }
     },
     penColour: {
@@ -175,7 +217,10 @@ const values = {
       attributes: {
         id: 'pencolour',
         type: 'button',
-        onclick: 'penColour()',
+        textContent: 'colour',
+      },
+      functions: {
+        onclick: 'penColour',
       }
     },
     penSize: {
@@ -183,9 +228,17 @@ const values = {
       attributes: {
         id: 'pensize',
         type: 'button',
-        onclick: 'penSize()',
+        textContent: 'size',
+      },
+      functions: {
+        onclick: 'penSize',
       }
     },
+    replay: {
+      attributes: {
+        id: 'replay'
+      }
+    }
   },
   drawing: {
     big: {
@@ -194,9 +247,13 @@ const values = {
     },
     dark: {
       true: '#000',
-      false: '888',
+      false: '#888',
     },
-    delay: 0.1 *1000, // delay between drawing frames
+    duration: 1.5 *1000, // total time to draw prompt
+  },
+  defaultData: {
+    text: '',
+    draw: [],
   }
 }
 

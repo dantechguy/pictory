@@ -1,83 +1,31 @@
 // required files
 const Room = require('./room');
-const stateTime = require('./stateTime');
+const forceTimeLimit = require('./forceTimeLimit');
 
 // classes
 class Rooms {
-  constructor(sendRoomMessageFunction) {
-    this.sendRoomMessageFunction = sendRoomMessageFunction;
+  constructor() {
     this.rooms = {};
   }
 
-  getRoom(roomId) {
+  room(roomId) {
     return this.rooms[roomId];
   }
 
-  deleteRoomIfAllPlayersDisconnectedOrToExit(roomId) {
-    if (this.allPlayersDisconnectedOrToExit(roomId)) {
-      l('deleting room', roomId)
-      this.deleteRoom(roomId);
-    }
-  }
-
-  allPlayersDisconnectedOrToExit(roomId) {
-    return this.getRoom(roomId).allPlayersDisconnectedOrToExit();
-  }
-
-  addPlayerToRoom(data) {
-    let room = this.getRoom(data.roomId);
-    room.addPlayerWithSessionId(data.sessionId);
-  }
-
-  tryToMoveToNextState(roomId) {
-    if (this.allPlayersAreReadyAndConnectedOrToExit(roomId)) {
-      l('all players ready')
-      this.moveToNextState(roomId);
-    }
-  }
-
-  sendSocketPlayerStatusUpdate(roomId) {
-    this.getRoom(roomId).sendSocketPlayerStatusUpdate();
-  }
-
-  moveToNextState(roomId) {
-    this.getRoom(roomId).nextState();
-  }
-
-  allPlayersAreReadyAndConnectedOrToExit(roomId) {
-    let room = this.getRoom(roomId);
-    return room.allPlayersAreReadyAndConnectedOrToExit();
-  }
-
   deleteRoom(roomId) { // all players have disconnected
-    this.deleteAllPlayers(roomId);
-    stateTime.cancelPreviousTimeouts(this.getRoom(roomId));
+    let room = this.room(roomId);
+    room.deleteAllPlayers();
+    forceTimeLimit.cancelPreviousForceNextStateTimeout(room);
     delete this.rooms[roomId];
   }
 
-  deleteAllPlayers(roomId) {
-    this.getRoom(roomId).deleteAllPlayers();
-  }
-
   createRoom(roomId) {
-    let room = new Room(roomId, sendRoomMessageFunction);
+    let room = new Room(roomId);
     this.rooms[roomId] = room;
   }
 
   roomExists(roomId) {
     return this.rooms.hasOwnProperty(roomId);
-  }
-
-  getRoomState(roomId) {
-    let room = this.getRoom(roomId);
-    let roomState = room.state;
-    return roomState;
-  }
-
-  getRoomTime(roomId) {
-    let room = this.getRoom(roomId);
-    let roomTime = room.time;
-    return roomTime;
   }
 }
 

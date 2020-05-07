@@ -13,17 +13,17 @@ const denyInvalidSessionId = responseFunctions.sessionId;
 const handleIndexGetRequest = require('./handleIndexGetRequest');
 const handleJoinPostRequest = require('./handleJoinPostRequest');
 const handleGameGetRequest = require('./handleGameGetRequest');
-const handleTimeGetRequest = require('./handleTimeGetRequest');
+// const handleTimeGetRequest = require('./handleTimeGetRequest');
 const handleDataPutRequest = require('./handleDataPutRequest');
 const handleDataGetRequest = require('./handleDataGetRequest');
-const handleDonePutRequest = require('./handleDonePutRequest');
+const handleExitPostRequest = require('./handleExitPostRequest');
 
 
 // functions
 function setupRoutingAndReturnServer() {
 
   app = express();
-  app.use(express.json({ limit: '50KB' })); // allows json body to be automatically parsed, limits size to 50KB
+  app.use(express.json({ limit: '100KB' })); // allows json body to be automatically parsed, limits size to 50KB
   app.use(cookieParser());
   server = app.listen(process.env.PORT || 3000);
 
@@ -33,28 +33,25 @@ function setupRoutingAndReturnServer() {
     handleJoinPostRequest(req, res);
   });
 
-  app.all('/*', (req, res, next) => { // cuts out any request with invalid session id
-    denyInvalidSessionId(req, res, next);
-  });
-
-  app.get('/game', (req, res) => {
+  app.get('/game', denyInvalidSessionId, (req, res) => {
     handleGameGetRequest(req, res);
   });
 
-  app.get('/time', (req, res) => {
-    handleTimeGetRequest(req, res);
-  });
+  // app.get('/time', denyInvalidSessionId, (req, res) => {
+  //   handleTimeGetRequest(req, res);
+  // });
 
-  app.put('/data', (req, res) => {
+  app.put('/data', denyInvalidSessionId, (req, res) => {
     handleDataPutRequest(req, res);
   });
 
-  app.get('/data', (req, res) => {
+  app.get('/data', denyInvalidSessionId, (req, res) => {
     handleDataGetRequest(req, res);
   });
 
-  app.put('/done', (req, res) => {
-    handleDonePutRequest(req, res);
+
+  app.post('/exit', denyInvalidSessionId, (req, res) => {
+    handleExitPostRequest(req, res);
   })
 
 

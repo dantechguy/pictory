@@ -18,7 +18,7 @@ class Player {
   }
 
   t() {
-    return `<${this.roomId} ${this.name.padEnd(8, ' ')} ${this.connected ? 'o' : 'x'}${this.ready ? 'o' : 'x'}>`;
+    return `${this.name}[${this.roomId}]`;
   }
 
   // following methods
@@ -26,7 +26,7 @@ class Player {
     this.following = sessionId;
   }
 
-  getFollowing() {
+  getFollowingPlayerSessionId() {
     return this.following;
   }
 
@@ -40,7 +40,7 @@ class Player {
   }
 
   putChainData(data) {
-    this.chainData.push(data);
+    this.chain.push(data);
   }
 
   getChainData() {
@@ -48,10 +48,21 @@ class Player {
   }
 
   moveNewDataToPreviousData() {
-    this.previousData = newData;
+    this.previousData = this.newData;
   }
 
   // ready methods
+  setReadyAndRefresh() {
+    let room = rooms.room(this.getRoomId());
+    if (!this.isReady()) {
+      this.setReady();
+      if ((room.getState() === values.state.IDEA || room.getState() === values.state.DRAW || room.getState() === values.state.GUESS)
+          && this.isConnected()) { // only refresh for waiting states
+        this.sendSocketRefresh();
+      }
+    };
+  }
+
   setReady() {
     this.ready = true;
   }
@@ -62,10 +73,6 @@ class Player {
 
   isReady() {
     return this.ready;
-  }
-
-  isNotReady() {
-    return !this.isReady();
   }
 
   // connected methods
@@ -81,13 +88,14 @@ class Player {
     return this.connected;
   }
 
-  isDisconnected() {
-    return !this.isConnected();
-  }
-
   // name access methods
   getName() {
     return this.name;
+  }
+
+  // room id access methods
+  getRoomId() {
+    return this.roomId;
   }
 
   // exit methods
@@ -97,6 +105,27 @@ class Player {
 
   isToExit() {
     return this.exit;
+  }
+
+  // socket io methods
+  sendSocketMessage(event, data) {
+    this.socket.emit(event, data);
+  }
+
+  sendSocketRefresh() {
+    this.sendSocketMessage(values.socket.RELOAD);
+  }
+
+  getSocket() {
+    return this.socket;
+  }
+
+  setSocket(socket) {
+    this.socket = socket;
+  }
+
+  removeSocket() {
+    this.socket = undefined;
   }
 }
 

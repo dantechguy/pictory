@@ -1,34 +1,87 @@
-function showDrawing(instant) {
-  let canvasElement = document.getElementById(values.dom.inputCanvasPrompt)
-    || let canvasElement = document.getElementById(values.dom.showCanvasPrompt);
-  let context = canvasElement.getContext('2d');
+function showDrawing(drawingData, instant, customElementId) {
+  let canvasId = customElementId ||
+    (values.dom[state === values.state.DRAW ? 'inputCanvasPrompt' : 'showCanvasPrompt'].attributes.id);
+  let canvas = document.getElementById(canvasId);
+  let context = canvas.getContext('2d');
+  context.clearRect(0, 0, canvas.width, canvas.height);
   context.lineJoin = 'round';
-  content.lineCap = 'round';
-  let width = canvasElement.clientWidth;
-  let height = canvasElement.clientHeight;
+  context.lineCap = 'round';
 
-  data.forEach((stroke) => {
+  let cumulativeDelay = 0;
+  let size = {width: canvas.width, height: canvas.height};
+  let delay = instant ? 0 : values.drawing.duration / totalPointsInDraw(drawingData);
+
+  // drawingData.forEach((stroke) => {
+  for (let i=0, n=drawingData.length; i<n; i++) {
+    let stroke = drawingData[i];
+
+    if (delay === 0) {
+      drawStroke(stroke, context, size, delay);
+    } else {
+      setTimeout(
+        () => drawStroke(stroke, context, size, delay),
+        cumulativeDelay,
+      );
+      cumulativeDelay += stroke.points.length * delay;
+    };
+
+  };
+}
+
+function drawStroke(stroke, context, size, delay) {
+  let points = stroke.points;
+
+  // set thickness and colour
+  context.lineWidth = values.drawing.big[stroke.type.big];
+  context.strokeStyle = values.drawing.dark[stroke.type.dark];
+
+  // initial point, for dots
+  context.beginPath();
+  context.arc(points[0].x * size.width, points[0].y * size.height, values.drawing.big[stroke.type.big]/16, 0, 2*Math.PI);
+  context.stroke();
+
+  // rest of line
+  if (delay === 0) {
+    instantStroke(points, context, size);
+  } else {
+    delayStroke(points, context, size, delay);
+  }
+}
+
+function instantStroke(points, context, size) {
+  context.beginPath();
+  context.moveTo(points[0].x * size.width, points[0].y * size.height);
+  for (let i=0, n=points.length; i<n; i++) {
+    let point = points[i];
+    context.lineTo(point.x * size.width, point.y * size.height);
+  };
+  context.stroke();
+}
+
+function delayStroke(points, context, size, delay) {
+  for (let i=1, n=points.length; i<n; i++) {
+    let previousPoint = points[i-1];
+    let point = points[i];
+    setTimeout(
+      () => {
+        context.beginPath();
+        context.moveTo(previousPoint.x * size.width, previousPoint.y * size.height);
+        context.lineTo(point.x * size.width, point.y * size.height);
+        context.stroke();
+      },
+      delay * i,
+    );
+  };
+}
+
+function totalPointsInDraw(drawingData) {
+  let total = 0;
+  for (let strokeI=0, n=drawingData.length; strokeI<n; strokeI++) {
+    let stroke = drawingData[strokeI];
     let points = stroke.points;
-
-    // set thickness and colour
-    context.lineWidth = values.drawing.big[stroke.type.big];
-    context.strokeStyle = values.drawing.dark[stroke.type.dark];
-
-    // initial point, for dots
-    context.beginPath();
-    context.arc(points[0].x, points[0].y, values.drawing.big[stroke.type]/2, 0, 2 * Math.PI);
-    context.fill();
-
-    // rest of line
-    context.beginPath();
-    context.moveTo(data[0].x * width, data[0].y * height);
-    points.slice(1).forEach((point, index) => {
-      if (!instant) {
-
-      }
-      context.lineTo(point.x * width, point.y * height);
-    });
-    context.stroke();
-  });
-
+    for (let pointI=0, m=points.length; pointI<m; pointI++) {
+      total ++;
+    };
+  };
+  return total;
 }

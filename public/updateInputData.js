@@ -2,30 +2,23 @@
 state
 data
 */
-
 function updateInputData() {
-  switch(state) {
+  if (state === values.state.INDEX) {
 
-    case values.state.LOBBY:
-      let nameElementId = values.dom.name.attributes.id;
-      let roomIdElementId = values.dom.name.attributes.id;
-      let nameElement = document.getElementById(nameElementId);
-      let roomIdElement = document.getElementById(roomIdElementId);
-      data = {
-        name: nameElement.value,
-        roomId: roomIdElement.value,
-      };
-      break;
+    let nameInputDom = document.getElementById(values.dom.name.attributes.id);
+    let roomIdInputDom = document.getElementById(values.dom.roomId.attributes.id);
+    submitData = {
+      name: nameInputDom.value,
+      roomId: roomIdInputDom.value
 
-    case values.state.IDEA || values.state.GUESS:
-      let inputTextPromptElementId = values.dom.inputTextPrompt.attributes.id;
-      let inputTextPromptElement = document.getElementById(inputTextPromptElementId);
-      data = {
-        data: inputPromptElement.value,
-      }
-      break;
+    };
+  } else if (state === values.state.IDEA || state == values.state.GUESS) {
 
-    // canvas input does not need to be updated
-    // as it automatically uses 'data' as its src
-  }
+    let inputTextPromptElement = document.getElementById(values.dom.inputTextPrompt.attributes.id);
+    submitData = inputTextPromptElement.value;
+
+  };
+
+  // canvas input does not need to be updated
+  // as it automatically uses 'data' as its storage
 }

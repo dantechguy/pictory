@@ -1,6 +1,6 @@
-function nameAndRoomIdAreValid(data) {
-  let name = data.name;
-  let roomId = data.roomId;
+function nameAndRoomIdAreValid() {
+  let name = submitData.name;
+  let roomId = submitData.roomId;
   return nameIsValid(name) && roomIdIsValid(roomId);
 }
 
@@ -12,18 +12,18 @@ function roomIdIsValid(roomId) {
   return /^[0-9]{4}$/.test(roomId);
 }
 
-function whatIsWrongWithNameAndRoomId(data) {
-  let whatIsWrongList = generateListOfWhatIsWrongWithNameAndRoomId(data);
+function whatIsWrongWithNameAndRoomId(submitData) {
+  let whatIsWrongList = generateListOfWhatIsWrongWithNameAndRoomId(submitData);
   let whatIsWrongText = whatIsWrongList.join(' ');
   return whatIsWrongText;
 }
 
-function generateListOfWhatIsWrongWithNameAndRoomId(data) {
+function generateListOfWhatIsWrongWithNameAndRoomId(submitData) {
   let whatIsWrongList = [];
-  if (!nameIsValid(data.name)) {
+  if (!nameIsValid(submitData.name)) {
     whatIsWrongList.push(values.error.INVALID_NAME);
   };
-  if (!roomIdIsValid(data.roomId)) {
+  if (!roomIdIsValid(submitData.roomId)) {
     whatIsWrongList.push(values.error.INVALID_ROOM_ID);
   }
   return whatIsWrongList;
