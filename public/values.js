@@ -112,7 +112,7 @@ const values = {
       attributes: {
         id: 'submit',
         type: 'button',
-        textContent: 'ready',
+        // textContent: 'ready',
       },
       functions: {
         onclick: 'submit',
@@ -123,7 +123,7 @@ const values = {
       attributes: {
         id: 'rejoin',
         type: 'button',
-        textContent: 'rejoin game',
+        // textContent: 'rejoin game',
       },
       functions: {
         onclick: 'reJoin',
@@ -140,7 +140,7 @@ const values = {
       attributes: {
         id: 'exit',
         type: 'button',
-        textContent: 'leave',
+        // textContent: 'leave',
       },
       functions: {
         onclick: 'setToExit',
@@ -155,7 +155,8 @@ const values = {
     inputTextPrompt: {
       ELEMENT: 'input',
       attributes: {
-        id: 'inputtextprompt'
+        id: 'inputtextprompt',
+        placeholder: 'your guess'
       }
     },
     showTextPrompt: {
@@ -195,7 +196,7 @@ const values = {
       attributes: {
         id: 'cleardrawing',
         type: 'button',
-        textContent: 'clear',
+        // textContent: 'clear',
       },
       functions: {
         onclick: 'clearDrawing',
@@ -206,7 +207,7 @@ const values = {
       attributes: {
         id: 'undostroke',
         type: 'button',
-        textContent: 'undo',
+        // textContent: 'undo',
       },
       functions: {
         onclick: 'undoStroke',
@@ -217,7 +218,7 @@ const values = {
       attributes: {
         id: 'pencolour',
         type: 'button',
-        textContent: 'colour',
+        // textContent: 'colour',
       },
       functions: {
         onclick: 'penColour',
@@ -228,7 +229,7 @@ const values = {
       attributes: {
         id: 'pensize',
         type: 'button',
-        textContent: 'size',
+        // textContent: 'size',
       },
       functions: {
         onclick: 'penSize',

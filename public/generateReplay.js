@@ -11,7 +11,7 @@ function generateReplay() {
     let container = document.createElement('div');
     let elementId = values.dom[elementName].attributes.id + '-' + i;
     let containerId = values.dom.CONTAINER_ID_PREFIX + elementId;
-    let nameElement = document.createElement('div');
+    let nameElement = document.createElement('div'); // with createElement, so has id and container
     nameElement.textContent = name;
     container.appendChild(nameElement);
     container.id = containerId;

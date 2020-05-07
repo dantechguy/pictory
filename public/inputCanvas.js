@@ -39,10 +39,22 @@ function undoStroke() {
 
 function penColour() {
   canvasData.type.dark = !canvasData.type.dark;
+  let penColour = document.getElementById(values.dom.penColour.attributes.id);
+  if (canvasData.type.dark) {
+    penColour.style.backgroundImage = "url('dark.svg')";
+  } else {
+    penColour.style.backgroundImage = "url('light.svg')";
+  };
 }
 
 function penSize() {
   canvasData.type.big = !canvasData.type.big;
+  let penSize = document.getElementById(values.dom.penSize.attributes.id);
+  if (canvasData.type.big) {
+    penSize.style.backgroundImage = "url('thick.svg')";
+  } else {
+    penSize.style.backgroundImage = "url('thin.svg')";
+  };
 }
 
 function getTouchCoordinates(event) {

@@ -1,0 +1,123 @@
+body {
+  margin: 0;
+  --bg: #ddd;
+  --active: #fff;
+  --text: #000;
+  --greytext: #888;
+  --weight: 600;
+  --padding: 5px;
+  --margin: 5px;
+  --iconsize: 17px;
+  --buttonsize: 30px;
+  --playerlistwidth: 100px;
+  --borderwidth: 3px;
+  --timerwidth: 40px;
+  --maxcanvaswidth: 90vw;
+  --maxcanvasheight: 90vh;
+  background-color: var(--bg);
+  padding-top: 10px;
+  text-align: center;
+  font-size: 0;
+}
+
+
+body * {
+  font-family: Arial, sans-serif;
+  font-size: 15px;
+  font-weight: var(--weight);
+  color: var(--text);
+}
+
+/* GENERAL */
+
+input, button, #timer {
+  border-radius: 3px;
+}
+
+input, button {
+  background-color: var(--active);
+  border: none;
+  padding: var(--padding);
+  margin: var(--margin);
+}
+
+input::placeholder {
+  color: var(--greytext);
+}
+
+/* button {
+  background-color: var(--active);
+  border: none;
+  padding: var(--padding);
+  margin: var(--margin);
+} */
+
+/* SPECIFIC */
+
+#playerlist {
+  padding: 0;
+  width: var(--playerlistwidth);
+  margin: var(--margin) auto;
+  text-align: left;
+  list-style: none;
+  border: var(--borderwidth) solid var(--active);
+}
+
+#playerlist img {
+  width: var(--iconsize);
+  height: var(--iconsize);
+}
+
+#timer {
+  border: var(--borderwidth) solid var(--active);
+  width: var(--timerwidth);
+  margin: var(--margin) auto;
+}
+
+canvas {
+  max-width: var(--maxcanvaswidth);
+  max-height: var(--maxcanvasheight);
+  background-color: #fff;
+}
+
+#container-cleardrawing, #container-undostroke, #container-pencolour, #container-pensize {
+  display: inline-block;
+}
+
+#submit, #rejoin, #exit, #cleardrawing, #undostroke, #pensize, #pencolour {
+  width: var(--buttonsize);
+  height: var(--buttonsize);
+  padding: var(--padding);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: calc(var(--buttonsize) - var(--padding));
+}
+
+#submit {
+  background-image: url('ready.svg');
+}
+
+#rejoin {
+  background-image: url('rejoin.svg');
+}
+
+#exit {
+  background-image: url('exit.svg');
+  transform: scaleX(-1);
+}
+
+#cleardrawing {
+  background-image: url('clear.svg');
+}
+
+#undostroke {
+  background-image: url('undo.svg');
+}
+
+#pensize {
+  background-image: url('thin.svg');
+}
+
+#pencolour {
+  background-image: url('dark.svg');
+}
