@@ -30,7 +30,7 @@ body * {
 
 /* GENERAL */
 
-input, button, #timer {
+input, button, #timer, canvas {
   border-radius: 3px;
 }
 
@@ -75,6 +75,7 @@ input::placeholder {
 }
 
 canvas {
+  margin: var(--margin);
   max-width: var(--maxcanvaswidth);
   max-height: var(--maxcanvasheight);
   background-color: #fff;

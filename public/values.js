@@ -156,7 +156,6 @@ const values = {
       ELEMENT: 'input',
       attributes: {
         id: 'inputtextprompt',
-        placeholder: 'your guess'
       }
     },
     showTextPrompt: {
