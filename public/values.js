@@ -23,7 +23,10 @@ const values = {
     PLAYER_NOT_READY: 'You are not ready.',
     ROOM_ENDED: 'The game has already ended.',
     TIME_LIMIT: 'The game has exceeded the time limit',
-    EMPTY_SUBMIT: 'Your prompt is empty, continue to submit?',
+  },
+  text: {
+    SUBMIT_CONFIRM: 'Are you sure you are ready?',
+    CLEAR_DRAWING_CONFIRM: 'Are you sure you want to clear?',
   },
   state: {
     INDEX: 'INDEX', // pseudo state
@@ -68,7 +71,7 @@ const values = {
   time: {
     IDEA: 60 *1000,
     DRAW: 120 *1000,
-    GUESS: 60 *1000,
+    GUESS: 600 *1000,
     PUT_DATA_FINAL: 3 *1000, // time before finish which data is uploaded
     CONNECT: 30 *1000, // non connected players have n seconds to re-connect or be removed after timer
     RETRY: 5 *1000, // how often client retries for /time and /data on error

@@ -3,7 +3,7 @@ function submit() {
   updateInputData();
   if (state === values.state.INDEX) {
     trySendJoinPostRequest();
-  } else if (submitDataIsEmpty() ? confirm(values.error.EMPTY_SUBMIT) : true) {
+  } else if (confirm(values.text.SUBMIT_CONFIRM)) {
     putData(values.url.DATA, {data: {prompt: submitData}})
     .catch(showError);
   };

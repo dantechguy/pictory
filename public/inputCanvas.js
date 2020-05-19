@@ -28,8 +28,10 @@ function touchEnd(event) {
 }
 
 function clearDrawing() {
-  submitData = JSON.parse(JSON.stringify(values.defaultData.draw));
-  showDrawing(submitData, true);
+  if (confirm(values.text.CLEAR_DRAWING_CONFIRM)) {
+    submitData = JSON.parse(JSON.stringify(values.defaultData.draw));
+    showDrawing(submitData, true);
+  };
 }
 
 function undoStroke() {

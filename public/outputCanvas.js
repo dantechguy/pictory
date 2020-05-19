@@ -7,84 +7,105 @@ function showDrawing(drawingData, instant, customElementId) {
   context.lineJoin = 'round';
   context.lineCap = 'round';
 
-  let cumulativeDelay = 0;
   let size = {width: canvas.width, height: canvas.height};
-  let delay = instant ? 0 : values.drawing.duration / totalPointsInDraw(drawingData);
+  let totalPoints = totalPointsInDraw(drawingData);
 
-  // drawingData.forEach((stroke) => {
-  for (let i=0, n=drawingData.length; i<n; i++) {
-    let stroke = drawingData[i];
-
-    if (delay === 0) {
-      drawStroke(stroke, context, size, delay);
-    } else {
-      setTimeout(
-        () => drawStroke(stroke, context, size, delay),
-        cumulativeDelay,
-      );
-      cumulativeDelay += stroke.points.length * delay;
-    };
-
-  };
-}
-
-function drawStroke(stroke, context, size, delay) {
-  let points = stroke.points;
-  let type = stroke.type;
-
-  // set thickness and colour
-  context.lineWidth = values.drawing.big[type.big];
-  context.strokeStyle = values.drawing.dark[type.dark];
-
-  // initial point, for dots
-  context.beginPath();
-  context.arc(points[0].x * size.width, points[0].y * size.height, values.drawing.big[stroke.type.big]/16, 0, 2*Math.PI);
-  context.stroke();
-
-  // rest of line
-  if (delay === 0) {
-    instantStroke(points, context, size);
+  if (instant) {
+    drawData(drawingData, context, size, {stroke: 0, point: 0}, totalPoints);
   } else {
-    delayStroke(points, context, size, delay, type);
+    requestAnimationFrame(() => {
+      let timePerPoint = values.drawing.duration / totalPoints;
+      drawDataDelay(drawingData, context, size, timePerPoint, new Date());
+    });
   }
-}
-
-function instantStroke(points, context, size) {
-  context.beginPath();
-  context.moveTo(points[0].x * size.width, points[0].y * size.height);
-  for (let i=0, n=points.length; i<n; i++) {
-    let point = points[i];
-    context.lineTo(point.x * size.width, point.y * size.height);
-  };
-  context.stroke();
-}
-
-function delayStroke(points, context, size, delay, type) {
-  context.lineWidth = values.drawing.big[type.big];
-  context.strokeStyle = values.drawing.dark[type.dark];
-  for (let i=1, n=points.length; i<n; i++) {
-    let previousPoint = points[i-1];
-    let point = points[i];
-    setTimeout(
-      () => {
-        context.beginPath();
-        context.moveTo(previousPoint.x * size.width, previousPoint.y * size.height);
-        context.lineTo(point.x * size.width, point.y * size.height);
-        context.stroke();
-      },
-      delay * i,
-    );
-  };
 }
 
 function totalPointsInDraw(drawingData) {
   let total = 0;
-  for (let strokeI=0, n=drawingData.length; strokeI<n; strokeI++) {
-    let stroke = drawingData[strokeI];
+  for (let strokeIndex=0, n=drawingData.length; strokeIndex<n; strokeIndex++) {
+    let stroke = drawingData[strokeIndex];
     let points = stroke.points;
-    for (let pointI=0, m=points.length; pointI<m; pointI++) {
-      total ++;
-    };
+    total += points.length;
   };
   return total;
+}
+
+function drawDataDelay(drawingData, context, size, timePerPoint, previousDrawTime, newStartSliceIndex) {
+  let startSliceIndex = newStartSliceIndex || {stroke: 0, point: 0};
+  let currentTime = new Date();
+  let timePassedSincePreviousDraw = currentTime - previousDrawTime;
+  let maxPointsToDraw = Math.ceil(timePassedSincePreviousDraw / timePerPoint);
+  console.log(timePassedSincePreviousDraw, timePerPoint, maxPointsToDraw);
+  let nextSliceData = increaseDrawingDataIndex(drawingData, startSliceIndex, maxPointsToDraw);
+  let nextSliceIndex = nextSliceData.sliceIndex;
+  let endSliceData = increaseDrawingDataIndex(drawingData, nextSliceIndex, 1);
+  let endSliceIndex = endSliceData.sliceIndex;
+  let pointsToDraw = nextSliceData.pointsToDraw + endSliceData.pointsToDraw;
+
+  drawData(drawingData, context, size, startSliceIndex, pointsToDraw)
+
+  if (!atEndOfDrawingData(drawingData, endSliceIndex)) {
+    requestAnimationFrame(() => {
+      // overlap current endSliceIndex and next startSliceIndex, so that stroke points are joined
+      drawDataDelay(drawingData, context, size, timePerPoint, currentTime, nextSliceIndex);
+    });
+  };
+}
+
+function atEndOfDrawingData(drawingData, sliceIndex) {
+  return sliceIndex.stroke === drawingData.length-1
+    && sliceIndex.point === drawingData[sliceIndex.stroke].points.length-1;
+}
+
+function increaseDrawingDataIndex(drawingData, startSliceIndex, pointsToDraw) {
+  let stroke, pointsLeftInStroke, endSliceIndex = {...startSliceIndex}, pointsDrawn = 0;
+  while (pointsDrawn < pointsToDraw) {
+    stroke = drawingData[endSliceIndex.stroke];
+    pointsLeftInStroke = stroke.points.length-1 - endSliceIndex.point;
+    pointsToRemove = Math.min(pointsLeftInStroke, pointsToDraw-pointsDrawn);
+
+    pointsDrawn += pointsToRemove;
+    endSliceIndex.point += pointsToRemove;
+
+    // if no more points to draw, or reached end of drawingData, end
+    if (pointsDrawn === pointsToDraw || atEndOfDrawingData(drawingData, endSliceIndex)) {
+      break;
+    } else { // if still points to draw, and not at end of drawingData
+      endSliceIndex.stroke++;
+      endSliceIndex.point = 0;
+      pointsDrawn++; // moving to the next stroke counts as moving one point
+    };
+  };
+  return {sliceIndex: endSliceIndex, pointsToDraw: pointsDrawn};
+}
+
+
+
+function drawData(drawingData, context, size, startSliceIndex, pointsToDraw) {
+
+  for (let strokeIndex=startSliceIndex.stroke; pointsToDraw>0; strokeIndex++) {
+    let stroke = drawingData[strokeIndex];
+    let points = stroke.points;
+
+    // set thickness and colour
+    context.lineWidth = values.drawing.big[stroke.type.big];
+    context.strokeStyle = values.drawing.dark[stroke.type.dark];
+
+    if (points.length === 0) { // only one point, a dot
+      context.beginPath();
+      context.arc(points[0].x * size.width, points[0].y * size.height, values.drawing.big[stroke.type.big]/16, 0, 2*Math.PI);
+      context.stroke();
+    } else { // a line
+      context.beginPath();
+      let startPointIndex = strokeIndex === startSliceIndex.stroke ? startSliceIndex.point : 0;
+      context.moveTo(points[startPointIndex].x * size.width, points[startPointIndex].y * size.height);
+
+      for (let pointIndex=startPointIndex; pointsToDraw>0 && pointIndex<points.length; pointIndex++) {
+        let point = points[pointIndex];
+        context.lineTo(point.x * size.width, point.y * size.height);
+        pointsToDraw--;
+      };
+      context.stroke();
+    };
+  };
 }
