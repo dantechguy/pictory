@@ -30,11 +30,11 @@ body * {
 
 /* GENERAL */
 
-input, button, #timer, canvas {
+input, button, #timer, canvas, [id^="showtextprompt"] {
   border-radius: 3px;
 }
 
-input, button {
+input, button, [id^="showtextprompt"] {
   background-color: var(--active);
   border: none;
   padding: var(--padding);
@@ -44,13 +44,6 @@ input, button {
 input::placeholder {
   color: var(--greytext);
 }
-
-/* button {
-  background-color: var(--active);
-  border: none;
-  padding: var(--padding);
-  margin: var(--margin);
-} */
 
 /* SPECIFIC */
 
@@ -121,4 +114,8 @@ canvas {
 
 #pencolour {
   background-image: url('dark.svg');
+}
+
+[id^="replayname"] {
+  margin-top: 20px;
 }

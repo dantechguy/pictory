@@ -7,22 +7,19 @@ function generateReplay() {
     let isText = typeof prompt === 'string';
     let elementName = isText ? 'showTextPrompt' : 'showCanvasPrompt';
 
-    let replayContainer = document.getElementById(values.dom.CONTAINER_ID_PREFIX + values.dom.replay.attributes.id)
-    let container = document.createElement('div');
-    let elementId = values.dom[elementName].attributes.id + '-' + i;
-    let containerId = values.dom.CONTAINER_ID_PREFIX + elementId;
-    let nameElement = document.createElement('div'); // with createElement, so has id and container
-    nameElement.textContent = name;
-    container.appendChild(nameElement);
-    container.id = containerId;
-    replayContainer.appendChild(container);
-    createElement(elementName, elementId);
-    promptElement = document.getElementById(elementId);
+    // the overall one container for all content
+    let replayContainerId = values.dom.CONTAINER_ID_PREFIX + values.dom.replay.attributes.id;
+    // the name of the user who created the prompt
+    let nameElementId = createElement('replayName', replayContainerId, i);
+    let nameElement = document.getElementById(nameElementId);
+    nameElement.textContent = name + values.text[isText ? 'TEXT_PROMPT_SUFFIX' : 'CANVAS_PROMPT_SUFFIX'];
+    // the prompt data element
+    let promptElementId = createElement(elementName, replayContainerId, i);
+    // adds prompt data to element
     if (isText) {
-      promptElement.textContent = prompt;
+      document.getElementById(promptElementId).textContent = prompt;
     } else {
-      showDrawing(prompt, false, elementId);
+      showDrawing(prompt, false, promptElementId);
     }
-    container.appendChild(promptElement);
   }
 }

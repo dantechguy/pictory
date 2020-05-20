@@ -1,8 +1,8 @@
-function createElement (type, customElementId) {
+function createElement (type, customContainerId, customElementNumber) {
   elementData = values.dom[type];
-
-  let elementId = (customElementId || elementData.attributes.id);
-  let containerId = values.dom.CONTAINER_ID_PREFIX + elementId;
+  console.log(type);
+  let elementId = elementData.attributes.id + (customElementNumber ? `-${customElementNumber}` : '');
+  let containerId = customContainerId || values.dom.CONTAINER_ID_PREFIX + elementId;
   let elementContainer = document.getElementById(containerId);
 
   let element = document.createElement(elementData.ELEMENT);
@@ -22,4 +22,5 @@ function createElement (type, customElementId) {
   }
 
   elementContainer.appendChild(element);
+  return elementId;
 }

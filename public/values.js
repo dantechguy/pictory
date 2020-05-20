@@ -27,6 +27,8 @@ const values = {
   text: {
     SUBMIT_CONFIRM: 'Are you sure you are ready?',
     CLEAR_DRAWING_CONFIRM: 'Are you sure you want to clear?',
+    TEXT_PROMPT_SUFFIX: ' said',
+    CANVAS_PROMPT_SUFFIX: ' drew',
   },
   state: {
     INDEX: 'INDEX', // pseudo state
@@ -253,11 +255,19 @@ const values = {
       }
     },
     replay: {
+      ELEMENT: '',
       attributes: {
         id: 'replay'
       }
-    }
+    },
+    replayName: {
+      ELEMENT: 'div',
+      attributes: {
+        'id': 'replayname',
+      }
+    },
   },
+
 }
 
 try {
