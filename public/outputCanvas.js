@@ -14,7 +14,7 @@ function showDrawing(drawingData, instant, customElementId) {
     drawData(drawingData, context, size, {stroke: 0, point: 0}, totalPoints);
   } else {
     requestAnimationFrame(() => {
-      let timePerPoint = values.drawing.duration / totalPoints;
+      let timePerPoint = values.time.DRAW_DELAY / totalPoints;
       drawDataDelay(drawingData, context, size, timePerPoint, new Date());
     });
   }
@@ -35,7 +35,6 @@ function drawDataDelay(drawingData, context, size, timePerPoint, previousDrawTim
   let currentTime = new Date();
   let timePassedSincePreviousDraw = currentTime - previousDrawTime;
   let maxPointsToDraw = Math.ceil(timePassedSincePreviousDraw / timePerPoint);
-  console.log(timePassedSincePreviousDraw, timePerPoint, maxPointsToDraw);
   let nextSliceData = increaseDrawingDataIndex(drawingData, startSliceIndex, maxPointsToDraw);
   let nextSliceIndex = nextSliceData.sliceIndex;
   let endSliceData = increaseDrawingDataIndex(drawingData, nextSliceIndex, 1);

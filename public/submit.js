@@ -5,6 +5,11 @@ function submit() {
     trySendJoinPostRequest();
   } else if (confirm(values.text.SUBMIT_CONFIRM)) {
     putData(values.url.DATA, {data: {prompt: submitData}})
+    .then(() => {
+      if (state === values.state.LOBBY) {
+        hideReadyButton();
+      };
+    })
     .catch(showError);
   };
 }

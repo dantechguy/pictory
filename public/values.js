@@ -71,13 +71,28 @@ const values = {
   time: {
     IDEA: 60 *1000,
     DRAW: 120 *1000,
-    GUESS: 600 *1000,
+    GUESS: 60 *1000,
     PUT_DATA_FINAL: 3 *1000, // time before finish which data is uploaded
     CONNECT: 30 *1000, // non connected players have n seconds to re-connect or be removed after timer
     RETRY: 5 *1000, // how often client retries for /time and /data on error
     TIMER: 0.1 *1000, // how often the timer updates
     TIMER_DP: 1, // how many decimal places the timer is to
     ROOM_DELETE: 60 * 1000, // how long after everyone has left that the room is deleted
+    DRAW_DELAY: 1.5 *1000, // total time to draw prompt
+  },
+  drawing: {
+    big: {
+      true: 10,
+      false: 5,
+    },
+    dark: {
+      true: '#000',
+      false: '#888',
+    },
+  },
+  defaultData: {
+    text: '',
+    draw: [],
   },
   dom: {
     CONTAINER_ID_PREFIX: 'container-',
@@ -243,21 +258,6 @@ const values = {
       }
     }
   },
-  drawing: {
-    big: {
-      true: 10,
-      false: 5,
-    },
-    dark: {
-      true: '#000',
-      false: '#888',
-    },
-    duration: 1.5 *1000, // total time to draw prompt
-  },
-  defaultData: {
-    text: '',
-    draw: [],
-  }
 }
 
 try {
