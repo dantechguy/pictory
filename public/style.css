@@ -16,6 +16,8 @@ body {
   --maxcanvaswidth: 90vw;
   --maxcanvasheight: 90vh;
   --buttonoffset: 3px;
+  --fontnormal: 15px;
+  --fontlarge: 20px;
   background-color: var(--bg);
   background-image: url('bubble.png');
   image-rendering: pixelated;
@@ -27,7 +29,7 @@ body {
 
 body * {
   font-family: Arial, sans-serif;
-  font-size: 15px;
+  font-size: var(--fontnormal);
   font-weight: var(--weight);
   color: var(--text);
 }
@@ -53,6 +55,7 @@ body * {
 }
 
 .button:hover {
+  cursor: pointer;
   position: relative;
   top: var(--buttonoffset);
   left: var(--buttonoffset);
@@ -105,6 +108,10 @@ canvas {
   background-color: #fff;
 }
 
+.crosshair:hover {
+  cursor: crosshair;
+}
+
 #container-cleardrawing, #container-undostroke, #container-pencolour, #container-pensize {
   display: inline-block;
 }
@@ -150,6 +157,7 @@ canvas {
 
 [id^="replayname"] {
   margin-top: 50px;
+  font-size: var(--fontlarge);
 }
 
 [id^="showtextprompt"] {

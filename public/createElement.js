@@ -1,6 +1,5 @@
 function createElement (type, customContainerId, customElementNumber) {
   elementData = values.dom[type];
-  console.log(type);
   let elementId = elementData.attributes.id + (customElementNumber ? `-${customElementNumber}` : '');
   let containerId = customContainerId || values.dom.CONTAINER_ID_PREFIX + elementId;
   let elementContainer = document.getElementById(containerId);

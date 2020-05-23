@@ -80,7 +80,7 @@ const values = {
     TIMER: 0.1 *1000, // how often the timer updates
     TIMER_DP: 1, // how many decimal places the timer is to
     ROOM_DELETE: 60 * 1000, // how long after everyone has left that the room is deleted
-    DRAW_DELAY: 1.5 *1000, // total time to draw prompt
+    DRAW_DELAY: 2.5 *1000, // total time to draw prompt
   },
   drawing: {
     big: {
@@ -194,7 +194,7 @@ const values = {
         id: 'inputcanvasprompt',
         width: 400,
         height: 500,
-        classList: 'border',
+        classList: 'border crosshair',
       },
       functions: {
         ontouchstart: 'touchStart',

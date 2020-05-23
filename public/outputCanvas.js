@@ -1,4 +1,5 @@
 function showDrawing(drawingData, instant, customElementId) {
+  if (!drawingData.length) {return};
   let canvasId = customElementId ||
     (values.dom[state === values.state.DRAW ? 'inputCanvasPrompt' : 'showCanvasPrompt'].attributes.id);
   let canvas = document.getElementById(canvasId);
