@@ -6,15 +6,19 @@ body {
   --greytext: #888;
   --weight: 600;
   --padding: 5px;
-  --margin: 5px;
+  --margin: 8px;
   --iconsize: 17px;
   --buttonsize: 30px;
+  --roomidsize: 10px;
   --playerlistwidth: 100px;
   --borderwidth: 3px;
   --timerwidth: 40px;
   --maxcanvaswidth: 90vw;
   --maxcanvasheight: 90vh;
+  --buttonoffset: 3px;
   background-color: var(--bg);
+  background-image: url('bubble.png');
+  image-rendering: pixelated;
   padding-top: 10px;
   text-align: center;
   font-size: 0;
@@ -30,13 +34,34 @@ body * {
 
 /* GENERAL */
 
-input, button, #timer, canvas, [id^="showtextprompt"] {
-  border-radius: 3px;
+.border, .button {
+  border-image-slice: 16 fill;
+  border-image-width: 16px;
+  border-image-outset: 9px;
+  border-image-repeat: repeat;
+  border-style: solid;
+  /* border-width: 16px; */
+}
+
+.border {
+  border-image-source: url('border.png');
+  background-color: var(--active);
+}
+
+.button {
+  border-image-source: url('button-out.png');
+}
+
+.button:hover {
+  position: relative;
+  top: var(--buttonoffset);
+  left: var(--buttonoffset);
+  border-image-source: url('button-in.png');
 }
 
 input, button, [id^="showtextprompt"] {
-  background-color: var(--active);
-  border: none;
+  text-align: center;
+  /* background-color: var(--active); */
   padding: var(--padding);
   margin: var(--margin);
 }
@@ -47,13 +72,19 @@ input::placeholder {
 
 /* SPECIFIC */
 
+#title {
+  width: 512px;
+  /* height: 64px; */
+  max-width: var(--maxcanvaswidth);
+  /* background-image: url('title.png'); */
+}
+
 #playerlist {
   padding: 0;
   width: var(--playerlistwidth);
   margin: var(--margin) auto;
   text-align: left;
   list-style: none;
-  border: var(--borderwidth) solid var(--active);
 }
 
 #playerlist img {
@@ -62,7 +93,7 @@ input::placeholder {
 }
 
 #timer {
-  border: var(--borderwidth) solid var(--active);
+  border: var(--bor:afterderwidth) solid var(--active);
   width: var(--timerwidth);
   margin: var(--margin) auto;
 }
@@ -78,7 +109,8 @@ canvas {
   display: inline-block;
 }
 
-#submit, #rejoin, #exit, #cleardrawing, #undostroke, #pensize, #pencolour {
+/* #submit, #rejoin, #exit, #cleardrawing, #undostroke, #pensize, #pencolour { */
+.button {
   width: var(--buttonsize);
   height: var(--buttonsize);
   padding: var(--padding);
@@ -97,7 +129,6 @@ canvas {
 
 #exit {
   background-image: url('exit.svg');
-  transform: scaleX(-1);
 }
 
 #cleardrawing {
@@ -117,5 +148,10 @@ canvas {
 }
 
 [id^="replayname"] {
-  margin-top: 20px;
+  margin-top: 50px;
+}
+
+[id^="showtextprompt"] {
+  display: inline-block;
+  max-width: var(--maxcanvaswidth);
 }

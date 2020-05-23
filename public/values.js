@@ -98,6 +98,13 @@ const values = {
   },
   dom: {
     CONTAINER_ID_PREFIX: 'container-',
+    title: {
+      ELEMENT: 'img',
+      attributes: {
+        id: 'title',
+        src: 'title.png',
+      }
+    },
     name: {
       ELEMENT: 'input',
       attributes: {
@@ -105,26 +112,17 @@ const values = {
         type: 'text',
         maxLength: 8,
         placeholder: 'name',
+        classList: 'border',
       }
     },
     roomId: {
       ELEMENT: 'input',
       attributes: {
         id: 'roomid',
-        type:'text',
+        type: 'text',
         maxLength: 4,
         placeholder: 'room id',
-      }
-    },
-    join: {
-      ELEMENT: 'button',
-      attributes: {
-        id: 'join',
-        type: 'button',
-        textContent: 'join',
-      },
-      functions: {
-        onclick: 'trySendJoinPostRequest',
+        classList: 'border',
       }
     },
     submit: {
@@ -132,7 +130,7 @@ const values = {
       attributes: {
         id: 'submit',
         type: 'button',
-        // textContent: 'ready',
+        classList: 'button',
       },
       functions: {
         onclick: 'submit',
@@ -143,6 +141,7 @@ const values = {
       attributes: {
         id: 'rejoin',
         type: 'button',
+        classList: 'button',
         // textContent: 'rejoin game',
       },
       functions: {
@@ -153,6 +152,7 @@ const values = {
       ELEMENT: 'ul',
       attributes: {
         id: 'playerlist',
+        classList: 'border',
       }
     },
     exit: {
@@ -160,6 +160,7 @@ const values = {
       attributes: {
         id: 'exit',
         type: 'button',
+        classList: 'button',
         // textContent: 'leave',
       },
       functions: {
@@ -170,18 +171,21 @@ const values = {
       ELEMENT: 'div',
       attributes: {
         id: 'timer',
+        classList: 'border',
       }
     },
     inputTextPrompt: {
       ELEMENT: 'input',
       attributes: {
         id: 'inputtextprompt',
+        classList: 'border',
       }
     },
     showTextPrompt: {
       ELEMENT: 'div',
       attributes: {
         id: 'showtextprompt',
+        classList: 'border',
       }
     },
     inputCanvasPrompt: {
@@ -190,6 +194,7 @@ const values = {
         id: 'inputcanvasprompt',
         width: 400,
         height: 500,
+        classList: 'border',
       },
       functions: {
         ontouchstart: 'touchStart',
@@ -208,6 +213,7 @@ const values = {
         id: 'showcanvasprompt',
         width: 400,
         height: 500,
+        classList: 'border',
       }
     },
     clearDrawing: {
@@ -215,7 +221,7 @@ const values = {
       attributes: {
         id: 'cleardrawing',
         type: 'button',
-        // textContent: 'clear',
+        classList: 'button',
       },
       functions: {
         onclick: 'clearDrawing',
@@ -226,7 +232,7 @@ const values = {
       attributes: {
         id: 'undostroke',
         type: 'button',
-        // textContent: 'undo',
+        classList: 'button',
       },
       functions: {
         onclick: 'undoStroke',
@@ -237,7 +243,7 @@ const values = {
       attributes: {
         id: 'pencolour',
         type: 'button',
-        // textContent: 'colour',
+        classList: 'button',
       },
       functions: {
         onclick: 'penColour',
@@ -248,7 +254,7 @@ const values = {
       attributes: {
         id: 'pensize',
         type: 'button',
-        // textContent: 'size',
+        classList: 'button',
       },
       functions: {
         onclick: 'penSize',
