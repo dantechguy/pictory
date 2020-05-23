@@ -120,6 +120,7 @@ canvas {
 }
 
 #submit {
+  background-color: #99e550;
   background-image: url('ready.svg');
 }
 
