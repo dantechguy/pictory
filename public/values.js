@@ -64,7 +64,7 @@ const values = {
     DRAW: 'GUESS',
     GUESS: 'DRAW',
     REPLAY: 'REPLAY',
-    MAX_ROUNDS: 5,
+    MAX_ROUNDS: 9,
   },
   socket: {
     RELOAD: 'RELOAD',
