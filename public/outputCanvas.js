@@ -1,5 +1,4 @@
 function showDrawing(drawingData, instant, customElementId) {
-  if (!drawingData.length) {return};
   let canvasId = customElementId ||
     (values.dom[state === values.state.DRAW ? 'inputCanvasPrompt' : 'showCanvasPrompt'].attributes.id);
   let canvas = document.getElementById(canvasId);
@@ -8,6 +7,7 @@ function showDrawing(drawingData, instant, customElementId) {
   context.imageSmoothingEnabled = false;
   context.lineJoin = 'round';
   context.lineCap = 'round';
+  if (!drawingData.length) {return};
 
   let size = {width: canvas.width, height: canvas.height};
   let totalPoints = totalPointsInDraw(drawingData);
